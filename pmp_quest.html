@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMP Quest — Certification Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a26;
+  --surface: #1e1e2e;
+  --surface2: #252538;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e8e8f0;
+  --text2: #9090a8;
+  --text3: #5a5a72;
+  --purple: #7c6af7;
+  --purple-light: #a99cff;
+  --purple-dim: rgba(124,106,247,0.15);
+  --teal: #2dd4a0;
+  --teal-dim: rgba(45,212,160,0.12);
+  --amber: #f5a623;
+  --amber-dim: rgba(245,166,35,0.12);
+  --coral: #f06060;
+  --coral-dim: rgba(240,96,96,0.12);
+  --blue: #4da6ff;
+  --blue-dim: rgba(77,166,255,0.12);
+  --gold: #ffd700;
+  --xp-bar: #7c6af7;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Sora',sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  min-height:100vh;
+}
+body::before{
+  content:'';
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(124,106,247,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(45,212,160,0.05) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+.app{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 20px 80px}
+
+/* ── HEADER ── */
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0 24px;border-bottom:1px solid var(--border);margin-bottom:28px;
+  flex-wrap:wrap;gap:12px;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:36px;height:36px;background:var(--purple);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#fff;
+}
+.logo-text{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.logo-sub{font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;letter-spacing:.04em;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:12px}
+.deadline-badge{
+  background:var(--amber-dim);border:1px solid rgba(245,166,35,0.3);
+  color:var(--amber);padding:5px 12px;border-radius:20px;
+  font-size:12px;font-family:'Space Mono',monospace;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:all .2s;
+  font-weight:500;
+}
+.deadline-badge:hover{background:rgba(245,166,35,0.2)}
+.deadline-badge.urgent{
+  background:rgba(240,96,96,0.15);border-color:rgba(240,96,96,0.4);color:var(--coral);
+}
+.deadline-badge.urgent:hover{background:rgba(240,96,96,0.25)}
+.deadline-badge svg{width:12px;height:12px;fill:currentColor}
+
+.format-banner{
+  padding:12px 16px;border-radius:var(--radius);margin-bottom:20px;
+  display:flex;align-items:flex-start;gap:12px;font-size:13px;line-height:1.5;
+}
+.format-banner.current{background:rgba(77,166,255,0.08);border:1px solid rgba(77,166,255,0.25);color:var(--text)}
+.format-banner.new{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.3);color:var(--text)}
+.format-banner.not-set{background:var(--surface);border:1px solid var(--border2)}
+.fb-icon{flex-shrink:0;width:20px;height:20px;margin-top:1px}
+.fb-title{font-weight:600;margin-bottom:3px}
+.fb-sub{color:var(--text2);font-size:12px}
+
+.calendar-wrap{margin:16px 0}
+.cal-input-row{display:flex;gap:8px;margin-bottom:12px}
+.cal-input{
+  flex:1;background:var(--surface);border:1px solid var(--border2);
+  color:var(--text);padding:10px 14px;border-radius:var(--radius-sm);
+  font-family:'Sora',sans-serif;font-size:14px;color-scheme:dark;
+}
+.cal-input:focus{outline:none;border-color:var(--purple)}
+.countdown-display{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:14px 16px;text-align:center;margin-top:12px;
+}
+.cd-label{font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.cd-val{font-size:32px;font-weight:700;letter-spacing:-1px;line-height:1}
+.cd-sub{font-size:12px;color:var(--text2);margin-top:6px}
+.pace-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.pace-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.ps-label{font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;letter-spacing:.04em}
+.ps-val{font-size:18px;font-weight:600;margin-top:2px}
+.settings-btn{
+  background:var(--surface);border:1px solid var(--border2);color:var(--text2);
+  padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;
+  font-family:'Sora',sans-serif;transition:all .2s;
+}
+.settings-btn:hover{background:var(--surface2);color:var(--text)}
+
+/* ── HERO STATS ── */
+.hero{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;
+}
+.hero-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 20px;
+}
+.hero-card.main{
+  grid-column:1/3;
+  background:var(--bg3);
+  border-color:rgba(124,106,247,0.2);
+}
+.hc-label{font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.hc-val{font-size:28px;font-weight:700;line-height:1;letter-spacing:-.5px}
+.hc-sub{font-size:12px;color:var(--text2);margin-top:4px}
+.xp-section{margin-top:12px}
+.xp-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
+.xp-track{background:rgba(255,255,255,0.06);border-radius:20px;height:8px;overflow:hidden}
+.xp-fill{height:100%;border-radius:20px;background:var(--purple);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.level-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple-dim);border:1px solid rgba(124,106,247,0.3);
+  color:var(--purple-light);padding:4px 10px;border-radius:20px;
+  font-size:12px;font-family:'Space Mono',monospace;margin-bottom:8px;
+}
+
+/* ── MILESTONES ── */
+.section-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:14px}
+.milestones{display:flex;gap:0;margin-bottom:28px;position:relative;overflow:hidden}
+.milestones::before{
+  content:'';position:absolute;top:22px;left:0;right:0;height:2px;
+  background:var(--border);z-index:0;
+}
+.ms{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;padding:0 4px}
+.ms-dot{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  margin-bottom:8px;transition:all .3s;flex-shrink:0;
+}
+.ms-dot.done{background:var(--teal);border-color:var(--teal);box-shadow:0 0 10px rgba(45,212,160,0.4)}
+.ms-dot.active{background:var(--purple);border-color:var(--purple);box-shadow:0 0 10px rgba(124,106,247,0.4);animation:pulse 2s infinite}
+.ms-dot svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.5}
+.ms-label{font-size:10px;color:var(--text3);text-align:center;line-height:1.3;font-family:'Space Mono',monospace}
+.ms.done .ms-label{color:var(--teal)}
+.ms.active .ms-label{color:var(--purple-light)}
+@keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(124,106,247,0.4)}50%{box-shadow:0 0 20px rgba(124,106,247,0.7)}}
+
+/* ── WEEK TABS ── */
+.week-tabs{display:flex;gap:6px;margin-bottom:20px;background:var(--surface);padding:5px;border-radius:var(--radius);border:1px solid var(--border)}
+.wtab{
+  flex:1;padding:8px 10px;border-radius:var(--radius-sm);border:none;
+  background:transparent;cursor:pointer;font-family:'Sora',sans-serif;font-size:13px;
+  color:var(--text2);font-weight:500;transition:all .2s;
+}
+.wtab:hover{background:var(--surface2);color:var(--text)}
+.wtab.active{color:#fff;font-weight:600}
+.wtab[data-w="1"].active{background:var(--purple)}
+.wtab[data-w="2"].active{background:#0d9e75}
+.wtab[data-w="3"].active{background:#c0432a}
+.wtab[data-w="4"].active{background:#1a5fa0}
+
+/* ── WEEK PANEL ── */
+.week-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:28px}
+.wp-header{padding:18px 22px 16px;border-bottom:1px solid var(--border)}
+.wp-title{font-size:18px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
+.wp-goal{font-size:13px;color:var(--text2);line-height:1.5}
+.wp-progress{display:flex;align-items:center;gap:12px;margin-top:12px}
+.wp-pct{font-size:13px;font-weight:600;min-width:36px;font-family:'Space Mono',monospace}
+.wp-bar-track{flex:1;background:rgba(255,255,255,0.06);border-radius:20px;height:6px;overflow:hidden}
+.wp-bar-fill{height:100%;border-radius:20px;transition:width .4s}
+
+/* ── DAY CARDS ── */
+.day-list{display:flex;flex-direction:column}
+.day-card{border-bottom:1px solid var(--border)}
+.day-card:last-child{border-bottom:none}
+.day-hdr{
+  display:flex;align-items:center;gap:12px;padding:14px 22px;cursor:pointer;
+  transition:background .15s;user-select:none;
+}
+.day-hdr:hover{background:rgba(255,255,255,0.02)}
+.day-tag{
+  font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;
+}
+.day-name{font-size:14px;font-weight:500;flex:1}
+.day-pts{font-size:11px;color:var(--amber);font-family:'Space Mono',monospace;white-space:nowrap}
+.day-prog-wrap{display:flex;align-items:center;gap:8px}
+.day-mini-track{width:48px;height:3px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.day-mini-fill{height:100%;border-radius:3px;transition:width .3s}
+.day-count{font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;min-width:28px;text-align:right}
+.chevron{width:14px;height:14px;stroke:var(--text3);fill:none;stroke-width:2;transition:transform .2s;flex-shrink:0}
+.chevron.open{transform:rotate(180deg)}
+
+.day-body{padding:16px 22px 20px;background:rgba(0,0,0,0.2);display:none}
+.day-body.open{display:block}
+
+.db-section-label{
+  font-size:10px;font-weight:600;font-family:'Space Mono',monospace;letter-spacing:.08em;
+  text-transform:uppercase;margin:16px 0 8px;padding:0;
+}
+.db-section-label:first-child{margin-top:0}
+
+/* checklist */
+.task-item{
+  display:flex;align-items:flex-start;gap:10px;padding:7px 0;
+  cursor:pointer;transition:opacity .2s;border-radius:6px;
+}
+.task-item:hover .task-cb{border-color:var(--purple)}
+.task-cb{
+  width:18px;height:18px;border:1.5px solid var(--border2);border-radius:5px;
+  background:transparent;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.task-cb.checked{background:var(--teal);border-color:var(--teal)}
+.task-cb.checked svg{display:block}
+.task-cb svg{display:none;width:10px;height:10px;stroke:#0a0a0f;fill:none;stroke-width:2.5}
+.task-label{font-size:13px;line-height:1.5;color:var(--text)}
+.task-item.done .task-label{color:var(--text3);text-decoration:line-through}
+.xp-chip{font-size:10px;color:var(--amber);font-family:'Space Mono',monospace;margin-left:auto;white-space:nowrap;padding-left:8px;flex-shrink:0}
+
+/* review box */
+.review-box{
+  background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--purple);
+  border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text2);
+  line-height:1.6;margin-top:4px;
+}
+
+/* resource links */
+.res-link{display:flex;align-items:center;gap:8px;padding:5px 0}
+.res-link a{font-size:13px;color:var(--blue);text-decoration:none;transition:color .15s}
+.res-link a:hover{color:#80c0ff;text-decoration:underline}
+.res-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.test-link{display:flex;align-items:center;gap:8px;padding:5px 0}
+.test-link a{font-size:13px;color:var(--coral);text-decoration:none;transition:color .15s}
+.test-link a:hover{color:#ff9090;text-decoration:underline}
+.test-dot{width:5px;height:5px;border-radius:50%;background:var(--coral);flex-shrink:0}
+
+.action-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.quiz-btn{
+  background:var(--purple);color:#fff;border:none;padding:9px 18px;
+  border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-family:'Sora',sans-serif;
+  font-weight:600;transition:all .2s;letter-spacing:.01em;
+}
+.quiz-btn:hover{background:#9080ff}
+.ai-btn{
+  background:var(--surface2);color:var(--text);border:1px solid var(--border2);
+  padding:9px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;
+  font-family:'Sora',sans-serif;transition:all .2s;
+}
+.ai-btn:hover{background:var(--bg3)}
+
+/* ── GOALS PANEL ── */
+.goals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.goal-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;position:relative;overflow:hidden;
+}
+.goal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.goal-card.g1::before{background:var(--purple)}
+.goal-card.g2::before{background:var(--teal)}
+.goal-card.g3::before{background:var(--coral)}
+.goal-card.g4::before{background:var(--blue)}
+.gc-week{font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:6px;letter-spacing:.04em}
+.gc-val{font-size:24px;font-weight:700;letter-spacing:-.5px;margin-bottom:2px}
+.gc-label{font-size:12px;color:var(--text2)}
+.gc-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.goal-card.g1 .gc-val{color:var(--purple-light)}
+.goal-card.g2 .gc-val{color:var(--teal)}
+.goal-card.g3 .gc-val{color:var(--coral)}
+.goal-card.g4 .gc-val{color:var(--blue)}
+
+/* ── STREAK STARS ── */
+.streak-stars{display:flex;gap:3px;margin-top:6px;align-items:center}
+.star{width:12px;height:12px;flex-shrink:0;transition:all .3s}
+.star path{fill:rgba(255,255,255,0.1);stroke:rgba(255,255,255,0.15);stroke-width:1;transition:all .3s}
+.star.lit path{fill:var(--teal);stroke:var(--teal)}
+.star.lit{filter:drop-shadow(0 0 3px rgba(45,212,160,0.5))}
+.star.complete path{fill:var(--gold);stroke:var(--gold)}
+.star.complete{filter:drop-shadow(0 0 4px rgba(255,215,0,0.6));animation:star-pulse 1.8s ease-in-out infinite}
+@keyframes star-pulse{0%,100%{filter:drop-shadow(0 0 4px rgba(255,215,0,0.6))}50%{filter:drop-shadow(0 0 8px rgba(255,215,0,0.9))}}
+
+/* ── ACHIEVEMENTS ── */
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.ach{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;text-align:center;transition:all .3s;
+}
+.ach.unlocked{border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.04)}
+.ach.unlocked .ach-icon{opacity:1;filter:none}
+.ach-icon{font-size:24px;margin-bottom:6px;opacity:.25;filter:grayscale(1);transition:all .3s}
+.ach-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.ach.unlocked .ach-name{color:var(--gold)}
+.ach-desc{font-size:11px;color:var(--text3);line-height:1.4}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;
+  animation:slide-in .3s cubic-bezier(.4,0,.2,1);min-width:240px;max-width:300px;
+  pointer-events:auto;
+}
+.toast.xp-toast{border-color:rgba(124,106,247,0.4);background:rgba(124,106,247,0.1)}
+.toast.ach-toast{border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.06)}
+.toast.lvl-toast{border-color:rgba(45,212,160,0.4);background:rgba(45,212,160,0.08)}
+.toast-icon{font-size:20px;flex-shrink:0}
+.toast-text{flex:1}
+.toast-title{font-size:13px;font-weight:600;margin-bottom:1px}
+.toast-sub{font-size:12px;color:var(--text2)}
+.toast.fade-out{animation:slide-out .3s forwards}
+@keyframes slide-in{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slide-out{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}
+
+/* ── QUIZ MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:28px;width:100%;max-width:560px;max-height:80vh;overflow-y:auto;
+}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:22px}
+.quiz-q{font-size:15px;font-weight:500;line-height:1.6;margin-bottom:16px;color:var(--text)}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.quiz-opt{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);
+  padding:11px 14px;cursor:pointer;font-size:13px;transition:all .2s;text-align:left;
+  color:var(--text);font-family:'Sora',sans-serif;
+}
+.quiz-opt:hover:not(.correct):not(.wrong){background:var(--surface2);border-color:var(--purple)}
+.quiz-opt.correct{background:rgba(45,212,160,0.1);border-color:var(--teal);color:var(--teal)}
+.quiz-opt.wrong{background:rgba(240,96,96,0.1);border-color:var(--coral);color:var(--coral)}
+.quiz-explain{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px;display:none}
+.quiz-explain.show{display:block}
+.quiz-score{font-size:14px;font-weight:600;text-align:center;margin-bottom:16px;display:none}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.btn-primary{background:var(--purple);color:#fff;border:none;padding:10px 22px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-family:'Sora',sans-serif;font-weight:600;transition:background .2s}
+.btn-primary:hover{background:#9080ff}
+.btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border2);padding:10px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-family:'Sora',sans-serif;transition:all .2s}
+.btn-secondary:hover{background:var(--surface);color:var(--text)}
+.quiz-progress{font-size:12px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:6px}
+.quiz-dots{display:flex;gap:4px;margin-bottom:20px}
+.quiz-dot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+.quiz-dot.done-right{background:var(--teal)}
+.quiz-dot.done-wrong{background:var(--coral)}
+.quiz-dot.current{background:var(--purple);box-shadow:0 0 8px rgba(124,106,247,0.6)}
+
+/* ── SETTINGS MODAL ── */
+.settings-body{display:flex;flex-direction:column;gap:16px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;font-weight:500}
+.setting-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;background:var(--surface2);border-radius:20px;transition:background .2s;cursor:pointer;border:1px solid var(--border2)}
+.toggle input:checked+.toggle-track{background:var(--purple)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.toggle input:checked~.toggle-thumb{transform:translateX(18px)}
+.danger-btn{background:rgba(240,96,96,0.1);color:var(--coral);border:1px solid rgba(240,96,96,0.3);padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-family:'Sora',sans-serif}
+.danger-btn:hover{background:rgba(240,96,96,0.2)}
+
+/* responsive */
+@media(max-width:640px){
+  .hero{grid-template-columns:1fr 1fr}
+  .hero-card.main{grid-column:1/3}
+  .goals-grid,.ach-grid{grid-template-columns:1fr 1fr}
+  .week-tabs{flex-wrap:wrap}
+  .wtab{font-size:11px;padding:7px 6px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-icon">PQ</div>
+    <div>
+      <div class="logo-text">PMP Quest</div>
+      <div class="logo-sub">Certification Journey</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <button class="deadline-badge" id="deadline-badge" onclick="openDeadline()">
+      <svg viewBox="0 0 16 16"><path d="M4 2v2H2v12h12V4h-2V2h-1v2H5V2H4zm0 4h8v8H4V6z"/></svg>
+      <span id="deadline-text">Set exam date</span>
+    </button>
+    <button class="settings-btn" onclick="openSettings()">Settings</button>
+  </div>
+</header>
+
+<div class="format-banner not-set" id="format-banner">
+  <svg class="fb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 7a1 1 0 011 1v4a1 1 0 11-2 0v-4a1 1 0 011-1zm0-3a1 1 0 110 2 1 1 0 010-2z"/></svg>
+  <div>
+    <div class="fb-title" id="fb-title">Set your exam date to personalize your plan</div>
+    <div class="fb-sub" id="fb-sub">Click the date badge above to pick when you'll take the exam — the plan adapts based on your timeline.</div>
+  </div>
+</div>
+
+<!-- HERO STATS -->
+<div class="hero">
+  <div class="hero-card main">
+    <div class="level-badge"><span>LVL</span><span id="level-num">1</span><span>—</span><span id="level-name">Initiate</span></div>
+    <div class="hc-label">Overall progress</div>
+    <div class="hc-val" id="hero-pct">0%</div>
+    <div class="hc-sub" id="hero-sub">0 of 56 tasks complete</div>
+    <div class="xp-section">
+      <div class="xp-row"><span>XP to next level</span><span id="xp-text" style="font-family:'Space Mono',monospace">0 / 200 XP</span></div>
+      <div class="xp-track"><div class="xp-fill" id="xp-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="hc-label">Total XP</div>
+    <div class="hc-val" style="color:var(--amber)" id="total-xp">0</div>
+    <div class="hc-sub">points earned</div>
+  </div>
+  <div class="hero-card">
+    <div class="hc-label">Streak</div>
+    <div class="hc-val" style="color:var(--teal)" id="streak-val">0</div>
+    <div class="hc-sub" id="streak-sub">days active</div>
+    <div class="streak-stars" id="streak-stars"></div>
+  </div>
+  <div class="hero-card">
+    <div class="hc-label">Tasks done</div>
+    <div class="hc-val" id="tasks-done">0</div>
+    <div class="hc-sub">of <span id="tasks-total">56</span></div>
+  </div>
+</div>
+
+<!-- MILESTONES -->
+<div class="section-title">Quest milestones</div>
+<div class="milestones" id="milestones-row"></div>
+
+<!-- WEEK TABS -->
+<div class="week-tabs">
+  <button class="wtab active" data-w="1" onclick="showWeek(1)">W1 Foundations</button>
+  <button class="wtab" data-w="2" onclick="showWeek(2)">W2 Predictive</button>
+  <button class="wtab" data-w="3" onclick="showWeek(3)">W3 Agile</button>
+  <button class="wtab" data-w="4" onclick="showWeek(4)">W4 Final Boss</button>
+</div>
+
+<!-- WEEK PANEL -->
+<div class="week-panel" id="week-panel"></div>
+
+<!-- SCORE GOALS -->
+<div class="section-title">Score targets</div>
+<div class="goals-grid">
+  <div class="goal-card g1"><div class="gc-week">Week 1 · Day 7</div><div class="gc-val">70%+</div><div class="gc-label">Quiz target</div><div class="gc-sub">30 questions · 36 min</div></div>
+  <div class="goal-card g2"><div class="gc-week">Week 2 · Day 14</div><div class="gc-val">70%+</div><div class="gc-label">Mock target</div><div class="gc-sub">50 questions · 60 min</div></div>
+  <div class="goal-card g3"><div class="gc-week">Week 3 · Day 21</div><div class="gc-val">70%+</div><div class="gc-label">Agile mock</div><div class="gc-sub">50 questions · 60 min</div></div>
+  <div class="goal-card g4"><div class="gc-week">Week 4 · Days 22-27</div><div class="gc-val">75%+</div><div class="gc-label">Full mock ×2</div><div class="gc-sub">180 questions · 230 min</div></div>
+</div>
+
+<!-- ACHIEVEMENTS -->
+<div class="section-title">Achievements</div>
+<div class="ach-grid" id="ach-grid"></div>
+
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- QUIZ MODAL -->
+<div class="modal-overlay" id="quiz-modal">
+  <div class="modal">
+    <div class="modal-title" id="qm-title">Quick Quiz</div>
+    <div class="modal-sub" id="qm-sub">Test your knowledge</div>
+    <div class="quiz-progress" id="q-progress"></div>
+    <div class="quiz-dots" id="q-dots"></div>
+    <div class="quiz-q" id="q-text"></div>
+    <div class="quiz-opts" id="q-opts"></div>
+    <div class="quiz-explain" id="q-explain"></div>
+    <div class="quiz-score" id="q-score"></div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeQuiz()">Close</button>
+      <button class="btn-primary" id="q-next-btn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEADLINE MODAL -->
+<div class="modal-overlay" id="deadline-modal">
+  <div class="modal">
+    <div class="modal-title">Set your PMP exam date</div>
+    <div class="modal-sub">Pick the date you plan to take (or have scheduled) your exam. The study plan will adapt to your timeline.</div>
+    <div class="calendar-wrap">
+      <div class="cal-input-row">
+        <input type="date" id="date-input" class="cal-input" />
+      </div>
+      <div class="countdown-display" id="cd-display" style="display:none">
+        <div class="cd-label">Time until exam</div>
+        <div class="cd-val" id="cd-days">—</div>
+        <div class="cd-sub" id="cd-date">—</div>
+        <div class="pace-grid">
+          <div class="pace-stat"><div class="ps-label">Study weeks</div><div class="ps-val" id="cd-weeks">—</div></div>
+          <div class="pace-stat"><div class="ps-label">Pace / day</div><div class="ps-val" id="cd-pace">—</div></div>
+        </div>
+      </div>
+      <div class="format-banner" id="modal-format-banner" style="display:none;margin-top:14px"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="clearDeadline()">Clear date</button>
+      <button class="btn-secondary" onclick="closeDeadline()">Cancel</button>
+      <button class="btn-primary" id="save-deadline-btn" onclick="saveDeadline()">Save date</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-title">Settings</div>
+    <div class="modal-sub">Manage your study experience</div>
+    <div class="settings-body">
+      <div class="setting-row">
+        <div><div class="setting-label">Sound effects</div><div class="setting-sub">Play sounds on task completion</div></div>
+        <label class="toggle"><input type="checkbox" id="snd-toggle" onchange="saveSetting('sound',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Show XP on tasks</div><div class="setting-sub">Display XP value next to each task</div></div>
+        <label class="toggle"><input type="checkbox" id="xp-toggle" checked onchange="saveSetting('showxp',this.checked);renderWeek(currentWeek-1)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Reset all progress</div><div class="setting-sub">This cannot be undone</div></div>
+        <button class="danger-btn" onclick="confirmReset()">Reset</button>
+      </div>
+    </div>
+    <div class="modal-btns" style="margin-top:20px">
+      <button class="btn-primary" onclick="closeSettings()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LEVELS=[
+  {name:'Initiate',xp:0},{name:'Apprentice',xp:200},{name:'Practitioner',xp:450},
+  {name:'Specialist',xp:750},{name:'Manager',xp:1100},{name:'Expert',xp:1500},
+  {name:'Senior PM',xp:1950},{name:'PMP Ready',xp:2400}
+];
+
+const ACHIEVEMENTS=[
+  {id:'first_blood',icon:'⚡',name:'First step',desc:'Complete your first task',cond:s=>s.done>=1},
+  {id:'week1',icon:'📖',name:'Week 1 done',desc:'Complete all Week 1 tasks',cond:s=>s.w1pct>=100},
+  {id:'week2',icon:'📊',name:'EVM master',desc:'Complete all Week 2 tasks',cond:s=>s.w2pct>=100},
+  {id:'week3',icon:'🌀',name:'Agile mindset',desc:'Complete all Week 3 tasks',cond:s=>s.w3pct>=100},
+  {id:'grinder',icon:'🔥',name:'Grinder',desc:'Complete 30 tasks total',cond:s=>s.done>=30},
+  {id:'halfway',icon:'🏔',name:'Halfway there',desc:'Reach 50% completion',cond:s=>s.pct>=50},
+  {id:'finisher',icon:'🎯',name:'All done',desc:'Complete every task',cond:s=>s.done>=56},
+  {id:'speedrun',icon:'⏱',name:'Focused',desc:'Complete 10 tasks in one session',cond:s=>s.session>=10},
+];
+
+const QUIZZES = {
+  1: [
+    {q:'A project manager downloads the PMI Exam Content Outline. What is the PRIMARY purpose of reviewing this document?',opts:['To memorize all project management formulas','To understand which topics are tested and their relative weight on the exam','To replace reading the PMBOK Guide entirely','To identify which PMI courses to purchase'],ans:1,exp:'The ECO defines the domains and their percentage weights — People (42%), Process (50%), Business Environment (8%). It is your exam syllabus and the single most important orientation document.'},
+    {q:'Which of the following correctly describes the PMBOK 7th Edition compared to PMBOK 6th Edition?',opts:['PMBOK 7 adds more process groups and knowledge areas','PMBOK 7 shifts from prescriptive processes to principle-based performance domains','PMBOK 7 removes all agile content from the guide','PMBOK 7 is only relevant for waterfall projects'],ans:1,exp:'PMBOK 7 replaced the 10 knowledge areas and 5 process groups with 8 performance domains and 12 principles. This is a fundamental mindset shift from "how to do PM" to "what defines good PM."'},
+    {q:'A PM is new to a project and wants to understand the most effective way to engage stakeholders. According to the PMBOK 7 Stakeholder Performance Domain, what should the PM focus on?',opts:['Minimizing stakeholder involvement to reduce scope creep','Identifying, analyzing, and actively engaging stakeholders throughout the project','Communicating only with high-power stakeholders','Documenting stakeholder concerns at the end of each phase'],ans:1,exp:'The Stakeholder Performance Domain emphasizes continuous identification, analysis, and tailored engagement with stakeholders. Passive or selective engagement is insufficient — active engagement is the PMI standard.'},
+    {q:"A team member is new and lacks confidence. According to Tuckman's model, the team is in the Forming stage. What should the PM do?",opts:['Let the team self-organize immediately','Provide clear direction, structure, and expectations','Delegate all decisions to the most experienced team member','Focus solely on schedule and ignore interpersonal dynamics'],ans:1,exp:"In the Forming stage, team members are uncertain and need direction. The PM should provide clarity on roles, goals, and processes. Each Tuckman stage calls for a different leadership approach — servant leadership becomes more appropriate in Norming/Performing."},
+    {q:'The PMP exam consists of 180 questions. According to PMI, approximately what percentage of questions are scenario-based?',opts:['25%','50%','70-80%','100%'],ans:2,exp:'PMI designs the PMP exam to test application of knowledge, not recall. Approximately 70-80% of questions are situational — they describe a real project scenario and ask what the PM should do, making conceptual understanding far more important than memorization.'},
+  ],
+  2: [
+    {q:'A project has a BAC of $100,000, EV of $60,000, and AC of $75,000. What is the CPI and what does it indicate?',opts:['CPI = 1.25, the project is under budget','CPI = 0.80, the project is over budget','CPI = 0.75, the project is under budget','CPI = 1.15, the project is on track'],ans:1,exp:'CPI = EV/AC = 60,000/75,000 = 0.80. A CPI below 1.0 means you are getting less value than you are spending — the project is over budget. EAC = BAC/CPI = 100,000/0.80 = $125,000 to complete.'},
+    {q:'A project manager needs to compress the schedule without changing scope. The critical path has three activities in sequence with no dependencies between them. What is the BEST approach?',opts:['Crash all activities simultaneously','Fast-track by overlapping the sequential activities','Add resources to non-critical path activities','Remove the least important activity'],ans:1,exp:"Fast-tracking overlaps activities that were planned sequentially, reducing duration without necessarily adding cost. Crashing adds resources to critical path activities (increases cost). Fast-tracking increases risk of rework but is often preferred when cost must be controlled."},
+    {q:'A vendor proposes a Firm Fixed Price (FFP) contract. From the buyer\'s perspective, what is the PRIMARY advantage?',opts:['The buyer bears all financial risk','The buyer has maximum cost certainty','The seller has no incentive to control costs','The buyer can change scope freely'],ans:1,exp:'In FFP contracts, the seller bears the financial risk — the price is set regardless of actual costs. This gives the buyer maximum cost certainty. The disadvantage is the seller may cut corners or the price may be inflated to cover risk.'},
+    {q:'During risk identification, the team discovers that a key supplier may go out of business. What risk response strategy is MOST appropriate?',opts:['Accept the risk and document it','Transfer the risk by requiring a performance bond from the supplier','Avoid the risk by starting the project immediately','Mitigate the risk by identifying a backup supplier now'],ans:3,exp:'Identifying a backup supplier is risk mitigation — it reduces the probability or impact of the risk event. A performance bond transfers financial risk but does not address the supply chain problem. Acceptance is appropriate for low-impact risks, not critical supply chain failures.'},
+    {q:'A project has 7 stakeholders. How many communication channels exist, and what happens if 3 more stakeholders join?',opts:['21 channels; increases to 45 channels','21 channels; increases to 55 channels','28 channels; increases to 45 channels','14 channels; increases to 35 channels'],ans:0,exp:'Communication channels = n(n-1)/2. With 7 stakeholders: 7×6/2 = 21. With 10 stakeholders: 10×9/2 = 45. This formula highlights why communication complexity explodes as teams grow — a key reason PMs must have a formal communications plan.'},
+  ],
+  3: [
+    {q:'The Agile Manifesto values "customer collaboration over contract negotiation." In a PMP exam scenario, a customer requests a significant change mid-sprint. What should the PM/Scrum Master do?',opts:['Reject the change since the sprint is already planned','Add it to the product backlog for the Product Owner to prioritize','Immediately pause the sprint and implement the change','Escalate to senior management for approval'],ans:1,exp:'In Scrum, mid-sprint changes go to the Product Backlog for the Product Owner to prioritize. The Product Owner decides if the change is important enough to incorporate in future sprints. Pausing a sprint (sprint cancellation) is reserved for cases where the sprint goal becomes obsolete.'},
+    {q:'A Kanban team is consistently missing delivery commitments. The team has 15 work items in progress simultaneously. What should the PM recommend?',opts:['Add more team members to handle the workload','Implement or reduce WIP limits to improve flow','Move to a Scrum framework immediately','Increase the iteration length'],ans:1,exp:'Kanban uses WIP (Work in Progress) limits to prevent bottlenecks and improve flow. Too many items in progress simultaneously leads to context-switching, delays, and missed commitments. Reducing WIP limits forces the team to finish work before starting new items.'},
+    {q:'Which conflict resolution mode does PMI consider MOST preferred for project managers?',opts:['Forcing — the PM has authority to decide','Smoothing — maintaining harmony is important','Collaborating (problem-solving) — address the root cause','Withdrawing — allow parties to cool down first'],ans:2,exp:"PMI's preferred order is: Collaborating > Compromising > Smoothing > Forcing > Withdrawing. Collaborating (problem-solving) addresses the root cause and creates lasting resolution. Forcing may be necessary in time-critical situations but damages relationships."},
+    {q:'A project team is in the Storming stage of Tuckman\'s model. Team members are openly disagreeing on the approach. What is the PM\'s BEST response?',opts:['Remove the most disruptive team member from the project','Facilitate discussion, help the team establish norms, and encourage healthy debate','Ignore the conflict — it will resolve itself','Immediately escalate to the project sponsor'],ans:1,exp:"Storming is a natural and necessary stage. The PM's role is to facilitate — not suppress — conflict, help the team establish working agreements, and create psychological safety for healthy debate. Teams that successfully navigate Storming become high-performing in the Norming/Performing stages."},
+    {q:'An agile team is working on a hybrid project. The PM needs to decide which lifecycle to use for a component with well-defined requirements and no expected changes. What is the BEST approach?',opts:['Use agile for all components for consistency','Use predictive (waterfall) for that specific component','Use Scrum regardless of requirements clarity','Consult the customer and use whatever they prefer'],ans:1,exp:"Hybrid projects use the most appropriate lifecycle for each component. Components with stable, well-understood requirements benefit from predictive approaches (better cost/schedule control). Agile is most valuable when requirements are uncertain or likely to evolve. The PMI Agile Practice Guide explicitly supports this tailored approach."},
+  ],
+  4: [
+    {q:'You are managing a large project and a team member identifies a risk that was not in the original risk register. The risk has a 40% probability and high impact. What should you do FIRST?',opts:['Immediately escalate to the project sponsor','Add the risk to the risk register and analyze it','Implement a risk response immediately','Wait to see if the risk materializes'],ans:1,exp:'The correct sequence is: identify → document in the risk register → analyze (qualitative, then quantitative if warranted) → plan response. Immediately implementing a response without analysis may be wasteful or inappropriate. Escalation may follow analysis if warranted.'},
+    {q:'A project is 80% complete. The sponsor requests a major scope change that will add 3 weeks to the schedule. What should the PM do?',opts:['Reject the change — the project is almost done','Accept the change to satisfy the sponsor','Submit the change through integrated change control for review and approval','Implement the change and update the schedule informally'],ans:2,exp:'All scope changes must go through integrated change control — regardless of project phase or sponsor authority. The CCB (Change Control Board) evaluates impact on scope, schedule, cost, quality, risk, and resources before approving. Bypassing this process — even for the sponsor — is a PMI red flag.'},
+    {q:'Your second full mock exam score is 73%, same as your first. Exam is in 3 days. What is the BEST strategy?',opts:['Study all topics broadly for 3 days','Focus only on your single weakest subtopic and practice targeted questions','Take another full mock immediately','Stop studying — you are ready'],ans:1,exp:'With 3 days left and a stable score, broad review adds little marginal value. Targeted practice on your weakest area — combined with reviewing your wrong answer log — yields the highest ROI. Deep improvement in one area is more impactful than shallow review across all areas.'},
+    {q:'During a retrospective, the team identifies that daily standups are running 45 minutes instead of 15. What is the BEST action?',opts:['Cancel the daily standup to save time','Have the Scrum Master enforce a strict 15-minute timebox and refocus the agenda','Move standups to weekly to reduce frequency','Assign a separate facilitator for each standup'],ans:1,exp:'The daily standup is timeboxed to 15 minutes in Scrum. The Scrum Master\'s role includes facilitating ceremonies and enforcing timeboxes. Extended standups indicate the meeting is being used for problem-solving rather than synchronization — detailed discussions should be moved to separate sessions.'},
+    {q:'On exam day, you encounter a question you are uncertain about. You have answered 90 of 180 questions and have 110 minutes remaining. What is the BEST approach?',opts:['Spend as long as needed to answer correctly','Flag the question, make your best guess, and move on','Skip the question entirely and leave it blank','Go back to the beginning and restart your review'],ans:1,exp:'Time management is critical on the PMP exam (~1.3 min/question average). Flag uncertain questions, make your best guess (do not leave blank — there is no penalty), and return at the end. Your first instinct is usually correct; only change answers when you have a clear, specific reason.'},
+  ]
+};
+
+const WEEKS_DATA=[
+  {id:1,color:'var(--purple)',bg:'rgba(124,106,247,0.08)',title:'Week 1 — Foundations',goal:'Get oriented. Understand the exam before diving into content.',
+   days:[
+    {label:'Day 1-2',name:'Exam overview & ECO',xp:100,tasks:['Download and read the PMI Exam Content Outline (ECO)','Learn the 3 domains: People (42%), Process (50%), Business Environment (8%)','Understand the ~50% agile/hybrid split','Note all 5 question types on the exam','Write a 1-paragraph summary of what the PMP tests — in your own words'],
+     review:'Close the ECO and write the 3 domains and weights from memory. Re-open and check. Repeat until correct.',
+     resources:[['PMI Exam Content Outline (free)','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation'],['PMPwithRay — Exam Overview','https://www.youtube.com/@PMPwithRay']],
+     tests:[['PMI Study Hall — 175 free questions','https://www.pmi.org/certifications/certification-resources/pmi-study-hall'],['ExamTopics — free PMP questions','https://www.examtopics.com/exams/pmi/pmp/view/']],qset:1},
+    {label:'Day 3-4',name:'PMBOK 7 principles & domains',xp:110,tasks:['Read all 12 PM Principles in PMBOK 7','List all 8 Performance Domains with a one-line definition each','Understand the PMBOK 6 → PMBOK 7 mindset shift','Create a personal flashcard for each principle'],
+     review:'Write the 8 performance domains from memory. Then explain in 1-2 sentences why PMI moved from process groups to principles.',
+     resources:[['PMBOK 7th Edition (free for PMI members)','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['Simplilearn PMBOK 7 Playlist','https://www.youtube.com/playlist?list=PLEiEAq2VkUULPx4heWRZFC-fxQ9zWDaEf']],
+     tests:[['Master of Project — free Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/'],['PMPracticeExam.org — Exam 1','https://www.pmppracticeexam.org/']],qset:1},
+    {label:'Day 5-6',name:'Stakeholder, team & planning domains',xp:120,tasks:["Deep read: Stakeholder Performance Domain",'Deep read: Team Performance Domain',"Study Tuckman's 5 stages: Forming, Storming, Norming, Performing, Adjourning",'Learn servant-leader vs command-and-control PM','Practice 20 situational questions — log every wrong answer'],
+     review:'For each wrong answer, identify the PMBOK principle it maps to. Do not advance to Day 7 until you understand why each right answer is right.',
+     resources:[['Oliver Lehmann — 100 free hard questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/'],['PMPwithRay — Stakeholder deep dive','https://www.youtube.com/@PMPwithRay']],
+     tests:[['ExamTopics — scenario questions','https://www.examtopics.com/exams/pmi/pmp/view/'],['PMPracticeExam.org — Exam 2','https://www.pmppracticeexam.org/']],qset:1},
+    {label:'Day 7',name:'Week 1 review & 30-question quiz',xp:150,tasks:['Write the 3 ECO domains and weights from memory','List all 8 PMBOK 7 Performance Domains from memory','List all 12 PM Principles from memory','Take timed 30-question quiz (36-minute timer)','Review every wrong answer with written explanation','Rest — cognitive consolidation requires recovery'],
+     review:'Target: 70%+. If below 70%, re-read weakest domain before Week 2. Write a "Week 1 Lessons Learned" note.',
+     resources:[['Pocket Prep — daily mobile quiz app','https://www.pocketprep.com/exams/pmi-pmp/']],
+     tests:[['Mometrix — free PMP practice exam','https://www.mometrix.com/academy/pmp-exam/'],['PrepCast — 120 free timed questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']],qset:1},
+  ]},
+  {id:2,color:'var(--teal)',bg:'rgba(45,212,160,0.06)',title:'Week 2 — Predictive PM',goal:'Master traditional project management — still 50% of the exam.',
+   days:[
+    {label:'Day 8-9',name:'Scope, schedule & cost management',xp:120,tasks:['Study WBS and scope baseline','Learn critical path method — identify the critical path in a sample network','Memorize EVM: CPI = EV/AC, SPI = EV/PV, EAC = BAC/CPI','Solve 3 EVM word problems without a formula sheet','Study schedule compression: crashing vs fast-tracking'],
+     review:'Do 3 EVM problems without notes. For each formula you looked up, write it 10 times then solve another problem.',
+     resources:[['PMBOK 7 — Planning & Delivery Domains','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['David McLachlan — EVM and Schedule','https://www.youtube.com/@davidmclachlanproject']],
+     tests:[['PMP Exam For Free — 700 questions','https://pmpexamforfree.com/'],['ExamTopics — cost/schedule filter','https://www.examtopics.com/exams/pmi/pmp/view/']],qset:2},
+    {label:'Day 10-11',name:'Risk, quality & procurement',xp:130,tasks:['Study risk register, qualitative vs quantitative risk analysis','Risk responses: avoid, transfer, mitigate, accept (threats)','Opportunity responses: exploit, share, enhance, accept','Quality: control vs assurance — which comes first?','Procurement: FFP, T&M, Cost-Reimbursable — buyer vs seller risk'],
+     review:'Create a 2-column table: Risk Response | When to Use It. Recreate from memory. Target 100% recall before Day 12.',
+     resources:[['PMBOK 7 — Uncertainty Domain','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['PMPwithRay — Risk Management','https://www.youtube.com/@PMPwithRay']],
+     tests:[['Master of Project — Risk Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/'],['PMPracticeExam.org — Exam 3','https://www.pmppracticeexam.org/']],qset:2},
+    {label:'Day 12-13',name:'Integration & communications',xp:120,tasks:['Study project charter, PM plan, and integrated change control','Change control process — who approves and when','Communications formula: n(n-1)/2','Communication methods: push, pull, interactive','Master the "what should the PM do FIRST?" question pattern'],
+     review:'Practice 10 "what should the PM do first?" questions. Write the rule for each correct answer. Pattern: plan before act, assess before escalate.',
+     resources:[['Oliver Lehmann — 180-question PDF','https://oliverlehmann.com/pmp-self-test/100-free-questions/'],['David McLachlan — Integration Management','https://www.youtube.com/@davidmclachlanproject']],
+     tests:[['ExamTopics — integration questions','https://www.examtopics.com/exams/pmi/pmp/view/'],['PMPracticeExam.org — Exam 4','https://www.pmppracticeexam.org/']],qset:2},
+    {label:'Day 14',name:'Week 2 review & 50-question mock',xp:180,tasks:['Take 50-question predictive mock — 60-minute timer','Categorize wrong answers by topic (scope, schedule, cost, risk, quality, procurement)','Identify your 2 weakest areas for Week 3','Write one sentence per wrong answer explaining the correct answer','Start your Wrong Answer Log — carry it through Week 4'],
+     review:'Target: 70%+. Below 65%? Spend 1 extra day on weakest topic before Week 3.',
+     resources:[['Pocket Prep — mobile daily questions','https://www.pocketprep.com/exams/pmi-pmp/']],
+     tests:[['PrepCast — 120 free timed questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test'],['PMPracticeExam.org — Exam 5','https://www.pmppracticeexam.org/']],qset:2},
+  ]},
+  {id:3,color:'var(--coral)',bg:'rgba(240,96,96,0.06)',title:'Week 3 — Agile & Hybrid',goal:'~50% of the exam is agile/hybrid. Treat this as seriously as Week 2.',
+   days:[
+    {label:'Day 15-16',name:'Agile foundations & Scrum',xp:120,tasks:['Memorize the 4 Agile Manifesto values — exact wording matters','Understand all 12 Agile Principles','Scrum: 3 roles (PO, SM, Dev Team), 5 ceremonies, 3 artifacts','Know PM role in agile vs Scrum Master role — they are different','Understand the Sprint cycle end-to-end'],
+     review:'Write the 4 Agile values from memory. Then write Scrum roles, ceremonies, and artifacts. Re-read any blanks.',
+     resources:[['Agile Practice Guide (free for PMI members)','https://www.pmi.org/pmbok-guide-standards/practice-guides/agile'],['PMPwithRay — Agile for PMP','https://www.youtube.com/@PMPwithRay']],
+     tests:[['PMLearning — 25 free agile questions','https://www.pmlearning.org/pmp/practice-exam'],['ExamTopics — agile scenarios','https://www.examtopics.com/exams/pmi/pmp/view/']],qset:3},
+    {label:'Day 17-18',name:'Kanban, XP, SAFe & hybrid models',xp:130,tasks:['Kanban: WIP limits, cycle time, throughput, lead time','XP: TDD, pair programming, continuous integration','Hybrid: when to use predictive vs agile','Read Agile Practice Guide section on lifecycle selection','SAFe at a high level: PI Planning, ARTs'],
+     review:'Create a comparison: Scrum vs Kanban vs XP — what problem does each solve? Verify against the Agile Practice Guide.',
+     resources:[['Agile Practice Guide — Lifecycle Selection','https://www.pmi.org/pmbok-guide-standards/practice-guides/agile'],['Simplilearn — Agile YouTube Playlist','https://www.youtube.com/playlist?list=PLEiEAq2VkUULPx4heWRZFC-fxQ9zWDaEf']],
+     tests:[['PMPracticeExam.org — Exam 6','https://www.pmppracticeexam.org/'],['Master of Project — Agile Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/']],qset:3},
+    {label:'Day 19-20',name:'Leadership, conflict & team development',xp:130,tasks:["Tuckman's 5 stages and the PM's role at each",'Leadership styles: servant, situational, transformational, laissez-faire','Conflict modes ranked: Collaborate > Compromise > Smooth > Force > Withdraw','Emotional intelligence: self-awareness, self-regulation, empathy, motivation, social skills','Motivation theories: Maslow, Herzberg, McGregor Theory X/Y, McClelland'],
+     review:"For each conflict mode, write PMI's preferred rank order from memory. For each leadership style, write a scenario where you'd use it.",
+     resources:[['PMBOK 7 — Team Performance Domain','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['David McLachlan — Leadership for PMP','https://www.youtube.com/@davidmclachlanproject']],
+     tests:[['ExamTopics — leadership questions','https://www.examtopics.com/exams/pmi/pmp/view/'],['Oliver Lehmann — 100 hard questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/']],qset:3},
+    {label:'Day 21',name:'Week 3 review & 50-question agile mock',xp:180,tasks:['Take 50-question agile/hybrid mock — 60-minute timer','Categorize wrong answers: Scrum, Kanban, XP, hybrid, leadership, conflict','If below 70%, revisit Agile Practice Guide before Week 4','Update your Wrong Answer Log','Identify your single biggest weakness for final week'],
+     review:'Scattered misses = question strategy issue. Process misses = re-read ceremonies. Leadership misses = practice situational judgment.',
+     resources:[['Agile Practice Guide (re-read weak sections)','https://www.pmi.org/pmbok-guide-standards/practice-guides/agile'],['Pocket Prep — agile drills','https://www.pocketprep.com/exams/pmi-pmp/']],
+     tests:[['PMLearning — 25 agile questions','https://www.pmlearning.org/pmp/practice-exam'],['PMPracticeExam.org — Exam 7','https://www.pmppracticeexam.org/']],qset:3},
+  ]},
+  {id:4,color:'var(--blue)',bg:'rgba(77,166,255,0.06)',title:'Week 4 — Final Boss',goal:'Build exam stamina, close all remaining gaps, and trust your preparation.',
+   days:[
+    {label:'Day 22-23',name:'Full 180-question timed mock',xp:200,tasks:['Simulate real exam: 230 minutes, no phone, scheduled breaks','Flag uncertain questions — never spend more than 2 minutes on one','After exam: score by domain (People, Process, Business Environment)','Identify lowest-scoring domain and subtopics within it','Spend 90 minutes reviewing every wrong answer with written explanation'],
+     review:'Diagnosis matters more than score. 68% with clear gap analysis beats 75% with no review.',
+     resources:[['PMI Study Hall — full practice exams','https://www.pmi.org/certifications/certification-resources/pmi-study-hall'],['PrepCast — 120 free questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']],
+     tests:[['PMPracticeExam.org — Exams 8-10','https://www.pmppracticeexam.org/'],['PMP Exam For Free — 700 questions','https://pmpexamforfree.com/']],qset:4},
+    {label:'Day 24-25',name:'Targeted gap closure',xp:170,tasks:['Pull out your Wrong Answer Log from all 3 weeks','Re-read every concept from your log — skip nothing','If a whole domain is below 65%, re-study it','Practice 20 questions in weakest topic only — target 75%+','Practice reading question stems from the end first'],
+     review:'Reading the last sentence of each question first helps identify what is being asked before the scenario context confuses you.',
+     resources:[['PMI ECO — re-read your weak domain','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation'],['PMBOK 7 — targeted re-read','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok']],
+     tests:[['ExamTopics — filter to weak area','https://www.examtopics.com/exams/pmi/pmp/view/'],['Mometrix — free PMP practice exam','https://www.mometrix.com/academy/pmp-exam/']],qset:4},
+    {label:'Day 26-27',name:'Second full mock & formula drill',xp:200,tasks:['Second full 180-question mock — full 230-minute simulation','EVM formula drill from memory: CPI, SPI, EAC, ETC, VAC','Communications formula n(n-1)/2 — solve 3 channel-count problems','Review remaining flashcard decks','Target: 75%+ — if 70-75% you are ready, trust it'],
+     review:'Compare to Mock 1 score. Improving = good. If not: focus on single weakest subtopic only. Focus beats breadth at this stage.',
+     resources:[['PMP Exam For Free — new question sets','https://pmpexamforfree.com/'],['PrepCast — 2nd round','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']],
+     tests:[['PMPracticeExam.org — final exams','https://www.pmppracticeexam.org/'],['PMLearning — 50 free questions','https://www.pmlearning.org/pmp/practice-exam']],qset:4},
+    {label:'Day 28',name:'Light review & rest',xp:100,tasks:['No new material — brain needs consolidation time','Skim your Wrong Answer Log one final time','Write EVM formulas from memory one last time to confirm','Prepare exam logistics: ID, testing center, snacks, water','Sleep 8+ hours — memory consolidates during sleep'],
+     review:'Visualize the exam calmly. You have done the work. Trust it.',
+     resources:[['PMI Certification Handbook — exam day logistics','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation']],
+     tests:[['PearsonVue — official sample exam interface','https://home.pearsonvue.com/pmi']],qset:4},
+  ]},
+];
+
+const TOTAL_TASKS=WEEKS_DATA.reduce((a,w)=>a+w.days.reduce((b,d)=>b+d.tasks.length,0),0);
+let state={tasks:{},open:{},xp:0,session:0,streak:0,lastDate:null,unlockedAch:new Set(),settings:{sound:false,showxp:true},deadline:null};
+let currentWeek=1;
+let quizState={questions:[],current:0,score:0,results:[],active:false};
+
+function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem('pmpq_v2')||'null');
+    if(s){
+      state.tasks=s.tasks||{};
+      state.open=s.open||{};
+      state.xp=s.xp||0;
+      state.session=s.session||0;
+      state.streak=s.streak||0;
+      state.lastDate=s.lastDate||null;
+      state.unlockedAch=new Set(s.unlockedAch||[]);
+      state.settings=Object.assign({sound:false,showxp:true},s.settings||{});
+      state.deadline=s.deadline||null;
+    }
+    const today=new Date().toDateString();
+    if(state.lastDate&&state.lastDate!==today){
+      const last=new Date(state.lastDate);
+      const now=new Date(today);
+      const gap=Math.round((now-last)/(24*60*60*1000));
+      if(gap>1)state.streak=0;
+    }
+    if(state.lastDate!==today){state.session=0;}
+  }catch(e){}
+}
+function saveState(){
+  try{
+    const s={...state,unlockedAch:[...state.unlockedAch]};
+    localStorage.setItem('pmpq_v2',JSON.stringify(s));
+  }catch(e){}
+}
+
+function getTaskKey(wIdx,dIdx,tIdx){return `w${wIdx}d${dIdx}t${tIdx}`}
+function getDone(){return Object.values(state.tasks).filter(Boolean).length}
+function getWeekData(wIdx){
+  const w=WEEKS_DATA[wIdx];
+  let done=0,total=0,xp=0,maxxp=0;
+  w.days.forEach((d,di)=>{
+    d.tasks.forEach((_,ti)=>{
+      total++;maxxp+=Math.round(d.xp/d.tasks.length);
+      if(state.tasks[getTaskKey(wIdx,di,ti)]){done++;xp+=Math.round(d.xp/d.tasks.length);}
+    });
+  });
+  return{done,total,xp,maxxp,pct:total>0?Math.round(done/total*100):0};
+}
+
+function getLevel(xp){
+  let lvl=0;
+  for(let i=LEVELS.length-1;i>=0;i--){if(xp>=LEVELS[i].xp){lvl=i;break;}}
+  return lvl;
+}
+
+function updateUI(){
+  const done=getDone();
+  const pct=Math.round(done/TOTAL_TASKS*100);
+  document.getElementById('hero-pct').textContent=pct+'%';
+  document.getElementById('hero-sub').textContent=done+' of '+TOTAL_TASKS+' tasks complete';
+  document.getElementById('tasks-done').textContent=done;
+  document.getElementById('total-xp').textContent=state.xp.toLocaleString();
+  document.getElementById('streak-val').textContent=state.streak;
+  const streakSub=document.getElementById('streak-sub');
+  if(streakSub){
+    const starsInWeek=state.streak%7;
+    if(state.streak===0)streakSub.textContent='days active';
+    else if(state.streak%7===0&&state.streak>0)streakSub.textContent='week complete!';
+    else streakSub.textContent=(7-starsInWeek)+' more for +100 XP';
+  }
+  renderStreakStars();
+
+  const lvl=getLevel(state.xp);
+  const nextLvl=Math.min(lvl+1,LEVELS.length-1);
+  const xpInLevel=state.xp-LEVELS[lvl].xp;
+  const xpNeeded=LEVELS[nextLvl].xp-LEVELS[lvl].xp;
+  const xpPct=lvl>=LEVELS.length-1?100:Math.round(xpInLevel/xpNeeded*100);
+  document.getElementById('level-num').textContent=lvl+1;
+  document.getElementById('level-name').textContent=LEVELS[lvl].name;
+  document.getElementById('xp-text').textContent=`${xpInLevel.toLocaleString()} / ${xpNeeded.toLocaleString()} XP`;
+  document.getElementById('xp-bar').style.width=xpPct+'%';
+
+  updateMilestones();
+  updateAchievements();
+  applySettings();
+  renderDeadlineBadge();
+  renderFormatBanner();
+}
+
+function renderStreakStars(){
+  const wrap=document.getElementById('streak-stars');
+  if(!wrap)return;
+  const starsInWeek=state.streak%7;
+  const complete=state.streak>0&&state.streak%7===0;
+  let html='';
+  for(let i=0;i<7;i++){
+    let cls='star';
+    if(complete)cls+=' complete';
+    else if(i<starsInWeek)cls+=' lit';
+    html+=`<svg class="${cls}" viewBox="0 0 12 12"><path d="M6 0.5l1.7 3.5 3.8 0.5-2.8 2.7 0.7 3.8L6 9.2 2.6 11l0.7-3.8L0.5 4.5l3.8-0.5z"/></svg>`;
+  }
+  wrap.innerHTML=html;
+}
+
+function updateMilestones(){
+  const done=getDone();
+  const thresholds=[7,14,21,28,35,42,49,56];
+  const labels=['W1 start','W1 done','W2 done','W3 start','W3 done','W4 start','W4 done','Exam ready'];
+  const row=document.getElementById('milestones-row');
+  row.innerHTML='';
+  thresholds.forEach((t,i)=>{
+    const isDone=done>=t;
+    const isActive=done>=(i>0?thresholds[i-1]:0)&&done<t;
+    const cls=isDone?'done':isActive?'active':'';
+    row.innerHTML+=`<div class="ms ${cls}">
+      <div class="ms-dot ${cls}">${isDone?`<svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>`:''}
+      </div>
+      <div class="ms-label">${labels[i]}</div>
+    </div>`;
+  });
+}
+
+function updateAchievements(){
+  const done=getDone();
+  const wd=WEEKS_DATA.map((_,i)=>getWeekData(i));
+  const stats={done,pct:Math.round(done/TOTAL_TASKS*100),w1pct:wd[0].pct,w2pct:wd[1].pct,w3pct:wd[2].pct,session:state.session};
+  const grid=document.getElementById('ach-grid');
+  grid.innerHTML='';
+  ACHIEVEMENTS.forEach(a=>{
+    const unlocked=a.cond(stats);
+    if(unlocked&&!state.unlockedAch.has(a.id)){
+      state.unlockedAch.add(a.id);
+      saveState();
+      setTimeout(()=>toast('ach-toast','Achievement unlocked!',a.name+' '+a.icon),500);
+    }
+    grid.innerHTML+=`<div class="ach${unlocked?' unlocked':''}">
+      <div class="ach-icon">${a.icon}</div>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+    </div>`;
+  });
+}
+
+function showWeek(n){
+  currentWeek=n;
+  document.querySelectorAll('.wtab').forEach(t=>t.classList.toggle('active',+t.dataset.w===n));
+  renderWeek(n-1);
+}
+
+function renderWeek(wIdx){
+  const w=WEEKS_DATA[wIdx];
+  const wd=getWeekData(wIdx);
+  const panel=document.getElementById('week-panel');
+  const showxp=state.settings.showxp;
+
+  panel.innerHTML=`<div class="wp-header">
+    <div class="wp-title" style="color:${w.color}">${w.title}</div>
+    <div class="wp-goal">${w.goal}</div>
+    <div class="wp-progress">
+      <div class="wp-pct" style="color:${w.color}">${wd.pct}%</div>
+      <div class="wp-bar-track"><div class="wp-bar-fill" style="width:${wd.pct}%;background:${w.color}"></div></div>
+      <div style="font-size:12px;color:var(--text3);font-family:'Space Mono',monospace">${wd.done}/${wd.total}</div>
+    </div>
+  </div>
+  <div class="day-list" id="day-list-${wIdx}"></div>`;
+
+  const list=document.getElementById('day-list-'+wIdx);
+  w.days.forEach((d,di)=>{
+    const isOpen=!!state.open[`w${wIdx}d${di}`];
+    const tasksDone=d.tasks.filter((_,ti)=>state.tasks[getTaskKey(wIdx,di,ti)]).length;
+    const dpct=Math.round(tasksDone/d.tasks.length*100);
+
+    const card=document.createElement('div');
+    card.className='day-card';
+    card.innerHTML=`<div class="day-hdr" onclick="toggleDay(${wIdx},${di})">
+      <div class="day-tag">${d.label}</div>
+      <div class="day-name">${d.name}</div>
+      <div class="day-pts" style="color:var(--amber)">${d.xp} XP</div>
+      <div class="day-prog-wrap">
+        <div class="day-mini-track"><div class="day-mini-fill" style="width:${dpct}%;background:${w.color}"></div></div>
+        <div class="day-count">${tasksDone}/${d.tasks.length}</div>
+      </div>
+      <svg class="chevron${isOpen?' open':''}" viewBox="0 0 14 14"><polyline points="2,4 7,10 12,4"/></svg>
+    </div>
+    <div class="day-body${isOpen?' open':''}">
+      <div class="db-section-label" style="color:${w.color}">Checklist</div>
+      ${d.tasks.map((t,ti)=>{
+        const k=getTaskKey(wIdx,di,ti);
+        const checked=!!state.tasks[k];
+        const xpEach=Math.round(d.xp/d.tasks.length);
+        return`<div class="task-item${checked?' done':''}" onclick="toggleTask(${wIdx},${di},${ti})">
+          <div class="task-cb${checked?' checked':''}"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <div class="task-label">${t}</div>
+          ${showxp?`<div class="xp-chip">+${xpEach} XP</div>`:''}
+        </div>`;
+      }).join('')}
+      <div class="db-section-label" style="color:${w.color};margin-top:16px">Review loop</div>
+      <div class="review-box">${d.review}</div>
+      <div class="db-section-label" style="color:var(--blue);margin-top:16px">Study materials</div>
+      ${d.resources.map(([l,u])=>`<div class="res-link"><div class="res-dot"></div><a href="${u}" target="_blank" rel="noopener">${l}</a></div>`).join('')}
+      <div class="db-section-label" style="color:var(--coral);margin-top:16px">Verify understanding</div>
+      ${d.tests.map(([l,u])=>`<div class="test-link"><div class="test-dot"></div><a href="${u}" target="_blank" rel="noopener">${l}</a></div>`).join('')}
+      <div class="action-row">
+        <button class="quiz-btn" onclick="openQuiz(${d.qset})">Take mini-quiz</button>
+      </div>
+    </div>`;
+    list.appendChild(card);
+  });
+}
+
+function toggleDay(wIdx,dIdx){
+  const k=`w${wIdx}d${dIdx}`;
+  state.open[k]=!state.open[k];
+  saveState();
+  renderWeek(wIdx);
+}
+
+function toggleTask(wIdx,dIdx,tIdx){
+  const k=getTaskKey(wIdx,dIdx,tIdx);
+  const wasChecked=!!state.tasks[k];
+  state.tasks[k]=!wasChecked;
+  const w=WEEKS_DATA[wIdx];
+  const d=w.days[dIdx];
+  const xpEach=Math.round(d.xp/d.tasks.length);
+
+  if(!wasChecked){
+    const prevXp=state.xp;
+    state.xp+=xpEach;
+    state.session++;
+    const today=new Date().toDateString();
+    let dailyBonus=0;
+    let weeklyBonus=0;
+    let newDay=false;
+    if(state.lastDate!==today){
+      newDay=true;
+      if(state.lastDate){
+        const last=new Date(state.lastDate);
+        const now=new Date(today);
+        const gap=Math.round((now-last)/(24*60*60*1000));
+        if(gap===1)state.streak++;
+        else state.streak=1;
+      } else {
+        state.streak=1;
+      }
+      state.lastDate=today;
+      dailyBonus=10;
+      state.xp+=dailyBonus;
+      if(state.streak>0&&state.streak%7===0){
+        weeklyBonus=100;
+        state.xp+=weeklyBonus;
+      }
+    }
+    saveState();
+    updateUI();
+    renderWeek(wIdx);
+    toast('xp-toast','XP earned!','+'+xpEach+' XP — keep going!');
+    if(newDay&&dailyBonus>0){
+      setTimeout(()=>toast('xp-toast','Daily login bonus!','+'+dailyBonus+' XP for showing up today'),500);
+    }
+    if(weeklyBonus>0){
+      setTimeout(()=>toast('ach-toast','7-day streak!','+'+weeklyBonus+' XP bonus — a full week of study!'),1000);
+    }
+    if(getLevel(state.xp)>getLevel(prevXp)){
+      const lvl=getLevel(state.xp);
+      setTimeout(()=>toast('lvl-toast','Level up!','You are now '+LEVELS[lvl].name+'!'),weeklyBonus>0?1500:600);
+    }
+  } else {
+    state.xp=Math.max(0,state.xp-xpEach);
+    saveState();
+    updateUI();
+    renderWeek(wIdx);
+  }
+}
+
+function openQuiz(qset){
+  const qs=QUIZZES[qset];
+  quizState={questions:[...qs].sort(()=>Math.random()-.5).slice(0,5),current:0,score:0,results:[],active:true};
+  const w=WEEKS_DATA.find(w=>w.days.some(d=>d.qset===qset));
+  document.getElementById('qm-title').textContent='Mini-quiz: Week '+qset;
+  document.getElementById('qm-sub').textContent='5 PMP-style scenario questions — pick the best answer';
+  document.getElementById('q-score').style.display='none';
+  document.getElementById('quiz-modal').classList.add('open');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const{questions,current}=quizState;
+  const q=questions[current];
+  document.getElementById('q-progress').textContent=`Question ${current+1} of ${questions.length}`;
+  document.getElementById('q-dots').innerHTML=questions.map((_,i)=>{
+    let cls='quiz-dot';
+    if(i<current)cls+=' '+(quizState.results[i]?'done-right':'done-wrong');
+    else if(i===current)cls+=' current';
+    return`<div class="${cls}"></div>`;
+  }).join('');
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-opts').innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="selectOpt(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('');
+  document.getElementById('q-explain').className='quiz-explain';
+  document.getElementById('q-explain').textContent='';
+  document.getElementById('q-next-btn').textContent=current===questions.length-1?'Finish':'Next';
+  document.getElementById('q-next-btn').style.display='none';
+}
+
+function selectOpt(idx){
+  const q=quizState.questions[quizState.current];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  const correct=idx===q.ans;
+  opts[idx].classList.add(correct?'correct':'wrong');
+  if(!correct)opts[q.ans].classList.add('correct');
+  const ex=document.getElementById('q-explain');
+  ex.textContent=q.exp;
+  ex.classList.add('show');
+  quizState.results.push(correct);
+  if(correct)quizState.score++;
+  document.getElementById('q-next-btn').style.display='block';
+  document.getElementById('q-dots').innerHTML=quizState.questions.map((_,i)=>{
+    let cls='quiz-dot';
+    if(i<=quizState.current)cls+=' '+(quizState.results[i]?'done-right':'done-wrong');
+    else if(i===quizState.current+1)cls+=' current';
+    return`<div class="${cls}"></div>`;
+  }).join('');
+}
+
+function nextQuestion(){
+  quizState.current++;
+  if(quizState.current>=quizState.questions.length){
+    const sc=quizState.score;
+    const tot=quizState.questions.length;
+    const pct=Math.round(sc/tot*100);
+    const bonus=Math.round(pct/100*50);
+    state.xp+=bonus;
+    saveState();
+    updateUI();
+    document.getElementById('q-text').textContent='';
+    document.getElementById('q-opts').innerHTML='';
+    document.getElementById('q-explain').className='quiz-explain';
+    document.getElementById('q-progress').textContent='';
+    const scoreEl=document.getElementById('q-score');
+    scoreEl.style.display='block';
+    const color=pct>=70?'var(--teal)':pct>=50?'var(--amber)':'var(--coral)';
+    scoreEl.innerHTML=`<span style="color:${color};font-size:32px">${pct}%</span><br><span style="font-weight:400;color:var(--text2)">${sc} of ${tot} correct · +${bonus} bonus XP</span>`;
+    document.getElementById('q-next-btn').style.display='none';
+    document.getElementById('q-dots').innerHTML=quizState.questions.map((_,i)=>`<div class="quiz-dot ${quizState.results[i]?'done-right':'done-wrong'}"></div>`).join('');
+    if(pct>=80)toast('ach-toast','Great score!','You got '+pct+'% — +'+bonus+' bonus XP!');
+    else if(pct>=60)toast('xp-toast','Good effort!','+'+bonus+' bonus XP earned');
+    return;
+  }
+  renderQuestion();
+}
+
+function closeQuiz(){document.getElementById('quiz-modal').classList.remove('open')}
+
+let toastId=0;
+function toast(cls,title,sub){
+  const wrap=document.getElementById('toast-wrap');
+  const id=++toastId;
+  const el=document.createElement('div');
+  el.className=`toast ${cls}`;
+  const icons={'xp-toast':'⚡','ach-toast':'🏆','lvl-toast':'🌟'};
+  el.innerHTML=`<div class="toast-icon">${icons[cls]||'✓'}</div><div class="toast-text"><div class="toast-title">${title}</div><div class="toast-sub">${sub}</div></div>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.remove(),300)},2800);
+}
+
+function daysBetween(d1,d2){
+  const ms=24*60*60*1000;
+  const a=new Date(d1.getFullYear(),d1.getMonth(),d1.getDate());
+  const b=new Date(d2.getFullYear(),d2.getMonth(),d2.getDate());
+  return Math.round((b-a)/ms);
+}
+
+function formatDate(d){
+  return d.toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+}
+
+function getDeadlineInfo(){
+  if(!state.deadline)return null;
+  const exam=new Date(state.deadline+'T00:00:00');
+  if(isNaN(exam))return null;
+  const today=new Date();
+  const daysLeft=daysBetween(today,exam);
+  const cutoff=new Date('2026-07-08T00:00:00');
+  const isNewFormat=exam>cutoff;
+  const weeks=Math.max(0.1,daysLeft/7);
+  const tasksRemaining=TOTAL_TASKS-getDone();
+  const pacePerDay=daysLeft>0?(tasksRemaining/daysLeft).toFixed(1):'—';
+  let urgency='normal';
+  if(daysLeft<0)urgency='past';
+  else if(daysLeft<=7)urgency='critical';
+  else if(daysLeft<=14)urgency='urgent';
+  return{exam,daysLeft,isNewFormat,weeks,pacePerDay,urgency,tasksRemaining};
+}
+
+function renderDeadlineBadge(){
+  const badge=document.getElementById('deadline-badge');
+  const txt=document.getElementById('deadline-text');
+  const info=getDeadlineInfo();
+  if(!info){
+    txt.textContent='Set exam date';
+    badge.classList.remove('urgent');
+    return;
+  }
+  if(info.daysLeft<0){
+    txt.textContent=`Exam was ${Math.abs(info.daysLeft)}d ago`;
+    badge.classList.add('urgent');
+  } else if(info.daysLeft===0){
+    txt.textContent='Exam is today!';
+    badge.classList.add('urgent');
+  } else {
+    txt.textContent=`${info.daysLeft} days until exam`;
+    if(info.urgency==='critical'||info.urgency==='urgent')badge.classList.add('urgent');
+    else badge.classList.remove('urgent');
+  }
+}
+
+function renderFormatBanner(){
+  const banner=document.getElementById('format-banner');
+  const info=getDeadlineInfo();
+  const title=document.getElementById('fb-title');
+  const sub=document.getElementById('fb-sub');
+  banner.className='format-banner';
+  if(!info){
+    banner.classList.add('not-set');
+    title.textContent='Set your exam date to personalize your plan';
+    sub.textContent="Click the date badge above to pick when you'll take the exam — the plan adapts based on your timeline.";
+    return;
+  }
+  if(info.daysLeft<0){
+    banner.classList.add('not-set');
+    title.textContent='Exam date is in the past';
+    sub.textContent='Update your exam date above to continue tracking progress.';
+    return;
+  }
+  const dateStr=formatDate(info.exam);
+  let paceMsg='';
+  if(info.weeks>=4)paceMsg=`You have ${info.weeks.toFixed(1)} weeks — enough time for the full 4-week plan with review buffer.`;
+  else if(info.weeks>=2.5)paceMsg=`You have ${info.weeks.toFixed(1)} weeks — tight but doable. Focus on checklist discipline.`;
+  else if(info.weeks>=1)paceMsg=`You have ${info.weeks.toFixed(1)} weeks — accelerated pace required. Skip to mocks sooner.`;
+  else paceMsg=`Only ${info.daysLeft} days left — crunch mode. Prioritize Week 4 mock exams and weak-area review.`;
+
+  if(info.isNewFormat){
+    banner.classList.add('new');
+    title.textContent='Exam date: '+dateStr+' (new PMBOK 8 format)';
+    sub.innerHTML=`Your exam is after July 8, 2026 — the new format includes more AI, sustainability, and value-delivery content. Supplement this plan with PMI's updated materials. <br><span style="display:inline-block;margin-top:4px">${paceMsg}</span>`;
+  } else {
+    banner.classList.add('current');
+    title.textContent='Exam date: '+dateStr+' (current PMBOK 7 format)';
+    sub.innerHTML=`You're scheduled before the July 8, 2026 format change — this plan is perfectly aligned. <br><span style="display:inline-block;margin-top:4px">${paceMsg}</span>`;
+  }
+}
+
+function updateDeadlineInModal(){
+  const input=document.getElementById('date-input').value;
+  const display=document.getElementById('cd-display');
+  const banner=document.getElementById('modal-format-banner');
+  if(!input){display.style.display='none';banner.style.display='none';return;}
+  const exam=new Date(input+'T00:00:00');
+  if(isNaN(exam)){display.style.display='none';banner.style.display='none';return;}
+  const today=new Date();
+  const daysLeft=daysBetween(today,exam);
+  display.style.display='block';
+  document.getElementById('cd-days').textContent=daysLeft>=0?daysLeft:'—';
+  document.getElementById('cd-date').textContent=formatDate(exam);
+  const weeks=(daysLeft/7).toFixed(1);
+  const tasksRemaining=TOTAL_TASKS-getDone();
+  document.getElementById('cd-weeks').textContent=daysLeft>0?weeks:'—';
+  document.getElementById('cd-pace').textContent=daysLeft>0?(tasksRemaining/daysLeft).toFixed(1)+' tasks':'—';
+  const color=daysLeft<0?'var(--coral)':daysLeft<=7?'var(--coral)':daysLeft<=14?'var(--amber)':'var(--teal)';
+  document.getElementById('cd-days').style.color=color;
+
+  banner.style.display='flex';
+  banner.className='format-banner';
+  const cutoff=new Date('2026-07-08T00:00:00');
+  const isNewFormat=exam>cutoff;
+  if(daysLeft<0){
+    banner.classList.add('not-set');
+    banner.innerHTML=`<svg class="fb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 7a1 1 0 011 1v4a1 1 0 11-2 0v-4a1 1 0 011-1zm0-3a1 1 0 110 2 1 1 0 010-2z"/></svg><div><div class="fb-title">Date is in the past</div><div class="fb-sub">Pick a future date.</div></div>`;
+  } else if(isNewFormat){
+    banner.classList.add('new');
+    banner.innerHTML=`<svg class="fb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg><div><div class="fb-title">New PMBOK 8 exam format</div><div class="fb-sub">Your exam is after July 8, 2026 — includes AI, sustainability, and value-delivery content beyond this plan.</div></div>`;
+  } else {
+    banner.classList.add('current');
+    banner.innerHTML=`<svg class="fb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm4.3 6.7l-5 5a1 1 0 01-1.4 0l-2.3-2.3a1 1 0 011.4-1.4L8.6 11.6l4.3-4.3a1 1 0 011.4 1.4z"/></svg><div><div class="fb-title">Current PMBOK 7 exam format</div><div class="fb-sub">Perfect — this plan aligns exactly with your exam format.</div></div>`;
+  }
+}
+
+function openDeadline(){
+  const input=document.getElementById('date-input');
+  input.value=state.deadline||'';
+  const today=new Date().toISOString().split('T')[0];
+  input.min=today;
+  input.onchange=updateDeadlineInModal;
+  input.oninput=updateDeadlineInModal;
+  updateDeadlineInModal();
+  document.getElementById('deadline-modal').classList.add('open');
+}
+function closeDeadline(){document.getElementById('deadline-modal').classList.remove('open')}
+function saveDeadline(){
+  const val=document.getElementById('date-input').value;
+  if(!val){closeDeadline();return;}
+  state.deadline=val;
+  saveState();
+  renderDeadlineBadge();
+  renderFormatBanner();
+  closeDeadline();
+  const info=getDeadlineInfo();
+  if(info&&info.daysLeft>=0)toast('xp-toast','Exam date set!',info.daysLeft+' days to go — you got this.');
+}
+function clearDeadline(){
+  state.deadline=null;
+  saveState();
+  renderDeadlineBadge();
+  renderFormatBanner();
+  closeDeadline();
+}
+
+function openSettings(){
+  document.getElementById('snd-toggle').checked=!!state.settings.sound;
+  document.getElementById('xp-toggle').checked=state.settings.showxp!==false;
+  document.getElementById('settings-modal').classList.add('open');
+}
+function closeSettings(){document.getElementById('settings-modal').classList.remove('open')}
+function saveSetting(k,v){state.settings[k]=v;saveState()}
+function applySettings(){
+  const el=document.getElementById('xp-toggle');
+  if(el)el.checked=state.settings.showxp!==false;
+}
+function confirmReset(){
+  if(confirm('Reset ALL progress? This cannot be undone.')){
+    localStorage.removeItem('pmpq_v2');
+    location.reload();
+  }
+}
+
+loadState();
+updateUI();
+renderWeek(0);
+</script>
+</body>
+</html>
