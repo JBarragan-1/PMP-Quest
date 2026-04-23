@@ -295,6 +295,38 @@ body::before{
 .goal-card.g3 .gc-val{color:var(--coral)}
 .goal-card.g4 .gc-val{color:var(--blue)}
 
+/* ── KEY TERMS ── */
+.key-terms-wrap{margin-top:4px}
+.key-terms-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.key-term{
+  background:rgba(124,106,247,0.1);border:1px solid rgba(124,106,247,0.25);
+  color:var(--purple-light);padding:3px 9px;border-radius:4px;
+  font-size:11px;font-family:'Space Mono',monospace;white-space:nowrap;
+}
+
+/* ── PDF BUTTON & VIEWER ── */
+.pdf-btn{
+  background:rgba(45,212,160,0.12);border:1px solid rgba(45,212,160,0.35);
+  color:var(--teal);padding:5px 12px;border-radius:20px;
+  font-size:12px;font-family:'Space Mono',monospace;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:all .2s;font-weight:500;
+}
+.pdf-btn:hover{background:rgba(45,212,160,0.2)}
+.pdf-btn svg{width:12px;height:12px;fill:currentColor}
+.pdf-modal{max-width:1100px;width:98%;height:92vh;max-height:92vh;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.pdf-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.pdf-head-left{display:flex;flex-direction:column}
+.pdf-head-left .pdf-title-txt{font-size:15px;font-weight:600}
+.pdf-head-left .pdf-sub-txt{font-size:12px;color:var(--text2);margin-top:2px}
+.pdf-head-right{display:flex;gap:8px;align-items:center}
+.pdf-close{background:var(--surface2);color:var(--text);border:1px solid var(--border2);padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Sora',sans-serif;font-size:13px}
+.pdf-close:hover{background:var(--bg3)}
+.pdf-body{flex:1;min-height:0;background:#222}
+.pdf-body iframe,.pdf-body embed,.pdf-body object{width:100%;height:100%;border:none;display:block}
+.pdf-fallback{padding:24px;text-align:center;color:var(--text2);display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;height:100%}
+.pdf-fallback-title{font-size:16px;font-weight:600;color:var(--text)}
+.pdf-fallback a{color:var(--teal);font-weight:500}
+
 /* ── STREAK STARS ── */
 .streak-stars{display:flex;gap:3px;margin-top:6px;align-items:center}
 .star{width:12px;height:12px;flex-shrink:0;transition:all .3s}
@@ -412,6 +444,10 @@ body::before{
     </div>
   </div>
   <div class="hdr-right">
+    <button class="pdf-btn" onclick="openPDF()">
+      <svg viewBox="0 0 16 16"><path d="M3 1a1 1 0 00-1 1v12a1 1 0 001 1h10a1 1 0 001-1V5l-4-4H3zm6 0v4h4"/></svg>
+      <span>PMBOK 7 Guide</span>
+    </button>
     <button class="deadline-badge" id="deadline-badge" onclick="openDeadline()">
       <svg viewBox="0 0 16 16"><path d="M4 2v2H2v12h12V4h-2V2h-1v2H5V2H4zm0 4h8v8H4V6z"/></svg>
       <span id="deadline-text">Set exam date</span>
@@ -434,7 +470,7 @@ body::before{
     <div class="level-badge"><span>LVL</span><span id="level-num">1</span><span>—</span><span id="level-name">Initiate</span></div>
     <div class="hc-label">Overall progress</div>
     <div class="hc-val" id="hero-pct">0%</div>
-    <div class="hc-sub" id="hero-sub">0 of 56 tasks complete</div>
+    <div class="hc-sub" id="hero-sub">0 tasks complete</div>
     <div class="xp-section">
       <div class="xp-row"><span>XP to next level</span><span id="xp-text" style="font-family:'Space Mono',monospace">0 / 200 XP</span></div>
       <div class="xp-track"><div class="xp-fill" id="xp-bar" style="width:0%"></div></div>
@@ -454,7 +490,7 @@ body::before{
   <div class="hero-card">
     <div class="hc-label">Tasks done</div>
     <div class="hc-val" id="tasks-done">0</div>
-    <div class="hc-sub">of <span id="tasks-total">56</span></div>
+    <div class="hc-sub">of <span id="tasks-total">—</span></div>
   </div>
 </div>
 
@@ -506,6 +542,23 @@ body::before{
       <button class="btn-secondary" onclick="closeQuiz()">Close</button>
       <button class="btn-primary" id="q-next-btn" onclick="nextQuestion()">Next</button>
     </div>
+  </div>
+</div>
+
+<!-- PDF VIEWER MODAL -->
+<div class="modal-overlay" id="pdf-modal">
+  <div class="modal pdf-modal">
+    <div class="pdf-head">
+      <div class="pdf-head-left">
+        <div class="pdf-title-txt">PMBOK 7 Guide — Official PMI Publication</div>
+        <div class="pdf-sub-txt">The Standard for Project Management + Project Management Body of Knowledge</div>
+      </div>
+      <div class="pdf-head-right">
+        <button class="pdf-close" onclick="openPDFExternal()">Open in new tab</button>
+        <button class="pdf-close" onclick="closePDF()">Close</button>
+      </div>
+    </div>
+    <div class="pdf-body" id="pdf-body"></div>
   </div>
 </div>
 
@@ -576,7 +629,7 @@ const ACHIEVEMENTS=[
   {id:'week3',icon:'🌀',name:'Agile mindset',desc:'Complete all Week 3 tasks',cond:s=>s.w3pct>=100},
   {id:'grinder',icon:'🔥',name:'Grinder',desc:'Complete 30 tasks total',cond:s=>s.done>=30},
   {id:'halfway',icon:'🏔',name:'Halfway there',desc:'Reach 50% completion',cond:s=>s.pct>=50},
-  {id:'finisher',icon:'🎯',name:'All done',desc:'Complete every task',cond:s=>s.done>=56},
+  {id:'finisher',icon:'🎯',name:'All done',desc:'Complete every task',cond:s=>s.done>=TOTAL_TASKS},
   {id:'speedrun',icon:'⏱',name:'Focused',desc:'Complete 10 tasks in one session',cond:s=>s.session>=10},
 ];
 
@@ -612,82 +665,316 @@ const QUIZZES = {
 };
 
 const WEEKS_DATA=[
-  {id:1,color:'var(--purple)',bg:'rgba(124,106,247,0.08)',title:'Week 1 — Foundations',goal:'Get oriented. Understand the exam before diving into content.',
+  {id:1,color:'var(--purple)',bg:'rgba(124,106,247,0.08)',title:'Week 1 — Foundations & Principles',goal:'Ground yourself in PMBOK 7 — the 12 Principles and value delivery system.',
    days:[
-    {label:'Day 1-2',name:'Exam overview & ECO',xp:100,tasks:['Download and read the PMI Exam Content Outline (ECO)','Learn the 3 domains: People (42%), Process (50%), Business Environment (8%)','Understand the ~50% agile/hybrid split','Note all 5 question types on the exam','Write a 1-paragraph summary of what the PMP tests — in your own words'],
+    {label:'Day 1-2',name:'Exam overview & ECO',xp:100,
+     tasks:[
+       'Download and read the PMI Exam Content Outline (ECO)',
+       'Learn the 3 exam domains: People (42%), Process (50%), Business Environment (8%)',
+       'Understand the ~50% agile/hybrid split across all questions',
+       'Note all 5 question types: MCQ, multi-response, matching, hotspot, fill-in-the-blank',
+       'Open the embedded PMBOK 7 Guide and skim pages 1-6 (Introduction)',
+       'Write a 1-paragraph summary of what the PMP tests — in your own words'
+     ],
+     keyTerms:['Exam Content Outline (ECO)','People domain','Process domain','Business Environment domain','Situational question','PMBOK Guide','Standard for Project Management','Project','Program','Portfolio'],
      review:'Close the ECO and write the 3 domains and weights from memory. Re-open and check. Repeat until correct.',
-     resources:[['PMI Exam Content Outline (free)','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation'],['PMPwithRay — Exam Overview','https://www.youtube.com/@PMPwithRay']],
-     tests:[['PMI Study Hall — 175 free questions','https://www.pmi.org/certifications/certification-resources/pmi-study-hall'],['ExamTopics — free PMP questions','https://www.examtopics.com/exams/pmi/pmp/view/']],qset:1},
-    {label:'Day 3-4',name:'PMBOK 7 principles & domains',xp:110,tasks:['Read all 12 PM Principles in PMBOK 7','List all 8 Performance Domains with a one-line definition each','Understand the PMBOK 6 → PMBOK 7 mindset shift','Create a personal flashcard for each principle'],
-     review:'Write the 8 performance domains from memory. Then explain in 1-2 sentences why PMI moved from process groups to principles.',
-     resources:[['PMBOK 7th Edition (free for PMI members)','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['Simplilearn PMBOK 7 Playlist','https://www.youtube.com/playlist?list=PLEiEAq2VkUULPx4heWRZFC-fxQ9zWDaEf']],
-     tests:[['Master of Project — free Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/'],['PMPracticeExam.org — Exam 1','https://www.pmppracticeexam.org/']],qset:1},
-    {label:'Day 5-6',name:'Stakeholder, team & planning domains',xp:120,tasks:["Deep read: Stakeholder Performance Domain",'Deep read: Team Performance Domain',"Study Tuckman's 5 stages: Forming, Storming, Norming, Performing, Adjourning",'Learn servant-leader vs command-and-control PM','Practice 20 situational questions — log every wrong answer'],
-     review:'For each wrong answer, identify the PMBOK principle it maps to. Do not advance to Day 7 until you understand why each right answer is right.',
-     resources:[['Oliver Lehmann — 100 free hard questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/'],['PMPwithRay — Stakeholder deep dive','https://www.youtube.com/@PMPwithRay']],
-     tests:[['ExamTopics — scenario questions','https://www.examtopics.com/exams/pmi/pmp/view/'],['PMPracticeExam.org — Exam 2','https://www.pmppracticeexam.org/']],qset:1},
-    {label:'Day 7',name:'Week 1 review & 30-question quiz',xp:150,tasks:['Write the 3 ECO domains and weights from memory','List all 8 PMBOK 7 Performance Domains from memory','List all 12 PM Principles from memory','Take timed 30-question quiz (36-minute timer)','Review every wrong answer with written explanation','Rest — cognitive consolidation requires recovery'],
-     review:'Target: 70%+. If below 70%, re-read weakest domain before Week 2. Write a "Week 1 Lessons Learned" note.',
-     resources:[['Pocket Prep — daily mobile quiz app','https://www.pocketprep.com/exams/pmi-pmp/']],
-     tests:[['Mometrix — free PMP practice exam','https://www.mometrix.com/academy/pmp-exam/'],['PrepCast — 120 free timed questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']],qset:1},
+     resources:[
+       ['PMI Exam Content Outline (free PDF, no signup)','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation'],
+       ['PMPwithRay — Exam Overview','https://www.youtube.com/@PMPwithRay'],
+       ['PMBOK 7 Guide — read in-game (pages 1-6)','#pdf-viewer']
+     ],
+     tests:[
+       ['ExamTopics — free PMP questions with community answers','https://www.examtopics.com/exams/pmi/pmp/view/'],
+       ['PMPracticeExam.org — Exam 1 (free, no signup)','https://www.pmppracticeexam.org/']
+     ],qset:1},
+    {label:'Day 3-4',name:'The 12 PM Principles',xp:120,
+     tasks:[
+       'Read PMBOK 7 pages 21-60 (Project Management Principles) in-game',
+       'Memorize all 12 Principles: Steward, Team, Stakeholders, Value, Systems, Leadership, Tailor, Quality, Complexity, Risk, Adaptability, Change',
+       'Write a one-line why-it-matters for each principle',
+       'Understand the shift: PMBOK 6 (process groups) -> PMBOK 7 (principles-based)',
+       'Create a flashcard for each principle — carry it through Week 4'
+     ],
+     keyTerms:['Stewardship','Accountability','Integrity','Value','Leadership','Systems thinking','Tailoring','Quality','Complexity','Risk','Adaptability','Resiliency','Change management'],
+     review:'Close PMBOK 7. Write the 12 principles from memory. Then explain the why for 3 of them out loud. The principles are the backbone of every exam answer.',
+     resources:[
+       ['PMBOK 7 Guide — PM Principles (in-game, pages 21-60)','#pdf-viewer'],
+       ['David McLachlan — PMBOK 7 Principles','https://www.youtube.com/@davidmclachlanproject'],
+       ['Simplilearn — PMP full playlist','https://www.youtube.com/playlist?list=PLEiEAq2VkUULPx4heWRZFC-fxQ9zWDaEf']
+     ],
+     tests:[
+       ['PMPracticeExam.org — Exam 2 (free)','https://www.pmppracticeexam.org/'],
+       ['Master of Project — free PMP Q&A with explanations','https://blog.masterofproject.com/pmp-questions-and-answers/']
+     ],qset:1},
+    {label:'Day 5-6',name:'Value Delivery & Stakeholders',xp:120,
+     tasks:[
+       'Read PMBOK 7 pages 7-19 (A System for Value Delivery) in-game',
+       'Read PMBOK 7 Stakeholder Performance Domain (pages 8-15) in-game',
+       'Understand how projects, programs, portfolios, and operations create value',
+       'Learn the 5 stakeholder engagement states: unaware, resistant, neutral, supportive, leading',
+       'Practice 15 situational questions on stakeholders — log every wrong answer'
+     ],
+     keyTerms:['Value delivery system','Stakeholder','Governance','Stakeholder engagement','Stakeholder analysis','Stakeholder register','Power-interest grid','Salience model','Business value','Benefits realization'],
+     review:'For each wrong answer, identify which Principle or Performance Domain it maps to. Do not move to Day 7 until you understand WHY each right answer is right.',
+     resources:[
+       ['PMBOK 7 Guide — Value Delivery + Stakeholder Domain (in-game)','#pdf-viewer'],
+       ['Oliver Lehmann — 100 free challenging PMP questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/'],
+       ['PMPwithRay — Stakeholder deep dive','https://www.youtube.com/@PMPwithRay']
+     ],
+     tests:[
+       ['ExamTopics — stakeholder scenario questions','https://www.examtopics.com/exams/pmi/pmp/view/'],
+       ['PMP Exam For Free — 700 questions, 7 sets','https://pmpexamforfree.com/']
+     ],qset:1},
+    {label:'Day 7',name:'Week 1 review & 30-question quiz',xp:150,
+     tasks:[
+       'Write the 3 ECO domains and weights from memory',
+       'List all 12 PM Principles from memory',
+       'List all 8 PMBOK 7 Performance Domains from memory',
+       'Take timed 30-question quiz (36-minute timer)',
+       'Review every wrong answer with written explanation referencing the PMBOK 7 PDF',
+       'Rest — cognitive consolidation requires recovery'
+     ],
+     keyTerms:['Performance domain','Principle','Project life cycle','Project phase','Tailoring','Project management plan'],
+     review:'Target: 70%+. If below 70%, re-read your weakest domain in the in-game PMBOK 7 before Week 2. Write a Week 1 Lessons Learned note.',
+     resources:[
+       ['PMBOK 7 Guide — re-read weak sections','#pdf-viewer']
+     ],
+     tests:[
+       ['Mometrix — free PMP practice exam (no signup)','https://www.mometrix.com/academy/pmp-exam/'],
+       ['PrepCast — 120 free timed questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']
+     ],qset:1}
   ]},
-  {id:2,color:'var(--teal)',bg:'rgba(45,212,160,0.06)',title:'Week 2 — Predictive PM',goal:'Master traditional project management — still 50% of the exam.',
+  {id:2,color:'var(--teal)',bg:'rgba(45,212,160,0.06)',title:'Week 2 — Team, Planning & Project Work',goal:'Master the Team, Planning, and Project Work Performance Domains — the heart of execution.',
    days:[
-    {label:'Day 8-9',name:'Scope, schedule & cost management',xp:120,tasks:['Study WBS and scope baseline','Learn critical path method — identify the critical path in a sample network','Memorize EVM: CPI = EV/AC, SPI = EV/PV, EAC = BAC/CPI','Solve 3 EVM word problems without a formula sheet','Study schedule compression: crashing vs fast-tracking'],
-     review:'Do 3 EVM problems without notes. For each formula you looked up, write it 10 times then solve another problem.',
-     resources:[['PMBOK 7 — Planning & Delivery Domains','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['David McLachlan — EVM and Schedule','https://www.youtube.com/@davidmclachlanproject']],
-     tests:[['PMP Exam For Free — 700 questions','https://pmpexamforfree.com/'],['ExamTopics — cost/schedule filter','https://www.examtopics.com/exams/pmi/pmp/view/']],qset:2},
-    {label:'Day 10-11',name:'Risk, quality & procurement',xp:130,tasks:['Study risk register, qualitative vs quantitative risk analysis','Risk responses: avoid, transfer, mitigate, accept (threats)','Opportunity responses: exploit, share, enhance, accept','Quality: control vs assurance — which comes first?','Procurement: FFP, T&M, Cost-Reimbursable — buyer vs seller risk'],
-     review:'Create a 2-column table: Risk Response | When to Use It. Recreate from memory. Target 100% recall before Day 12.',
-     resources:[['PMBOK 7 — Uncertainty Domain','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['PMPwithRay — Risk Management','https://www.youtube.com/@PMPwithRay']],
-     tests:[['Master of Project — Risk Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/'],['PMPracticeExam.org — Exam 3','https://www.pmppracticeexam.org/']],qset:2},
-    {label:'Day 12-13',name:'Integration & communications',xp:120,tasks:['Study project charter, PM plan, and integrated change control','Change control process — who approves and when','Communications formula: n(n-1)/2','Communication methods: push, pull, interactive','Master the "what should the PM do FIRST?" question pattern'],
-     review:'Practice 10 "what should the PM do first?" questions. Write the rule for each correct answer. Pattern: plan before act, assess before escalate.',
-     resources:[['Oliver Lehmann — 180-question PDF','https://oliverlehmann.com/pmp-self-test/100-free-questions/'],['David McLachlan — Integration Management','https://www.youtube.com/@davidmclachlanproject']],
-     tests:[['ExamTopics — integration questions','https://www.examtopics.com/exams/pmi/pmp/view/'],['PMPracticeExam.org — Exam 4','https://www.pmppracticeexam.org/']],qset:2},
-    {label:'Day 14',name:'Week 2 review & 50-question mock',xp:180,tasks:['Take 50-question predictive mock — 60-minute timer','Categorize wrong answers by topic (scope, schedule, cost, risk, quality, procurement)','Identify your 2 weakest areas for Week 3','Write one sentence per wrong answer explaining the correct answer','Start your Wrong Answer Log — carry it through Week 4'],
-     review:'Target: 70%+. Below 65%? Spend 1 extra day on weakest topic before Week 3.',
-     resources:[['Pocket Prep — mobile daily questions','https://www.pocketprep.com/exams/pmi-pmp/']],
-     tests:[['PrepCast — 120 free timed questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test'],['PMPracticeExam.org — Exam 5','https://www.pmppracticeexam.org/']],qset:2},
+    {label:'Day 8-9',name:'Team Performance Domain',xp:130,
+     tasks:[
+       'Read PMBOK 7 Team Performance Domain (pages 16-31) in-game',
+       'Study Tuckman 5 stages: Forming, Storming, Norming, Performing, Adjourning',
+       'Learn leadership styles: servant-leader, situational, transformational, laissez-faire, transactional',
+       'Memorize the 5 conflict resolution modes ranked: Collaborate > Compromise > Smooth > Force > Withdraw',
+       'Emotional intelligence domains: self-awareness, self-regulation, motivation, empathy, social skills',
+       'Motivation theories: Maslow, Herzberg, McGregor X/Y, McClelland, Expectancy theory'
+     ],
+     keyTerms:['Project team','Servant leadership','Team charter','Ground rules','Team culture','Centralized team','Distributed team','Tuckman','Conflict management','Emotional intelligence','Motivation','Psychological safety','Self-organizing team'],
+     review:'Close PMBOK 7. Write all 5 Tuckman stages and the 5 conflict modes (in PMI-preferred order) from memory. For each leadership style, write one real scenario where you would use it.',
+     resources:[
+       ['PMBOK 7 Guide — Team Performance Domain (in-game)','#pdf-viewer'],
+       ['David McLachlan — Leadership & team topics','https://www.youtube.com/@davidmclachlanproject'],
+       ['PMPwithRay — Team management','https://www.youtube.com/@PMPwithRay']
+     ],
+     tests:[
+       ['ExamTopics — team/leadership scenario questions','https://www.examtopics.com/exams/pmi/pmp/view/'],
+       ['Oliver Lehmann — 100 challenging questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/']
+     ],qset:2},
+    {label:'Day 10-11',name:'Planning Performance Domain',xp:140,
+     tasks:[
+       'Read PMBOK 7 Planning Performance Domain (pages 51-68) in-game',
+       'Study WBS, scope baseline, and activity-on-node network diagrams',
+       'Learn Critical Path Method (CPM) and identify float/slack',
+       'Memorize 3 EVM formulas: CPI = EV/AC, SPI = EV/PV, EAC = BAC/CPI',
+       'Solve 3 EVM word problems without a formula sheet',
+       'Communications formula: channels = n(n-1)/2 — solve 3 problems',
+       'Estimating techniques: analogous, parametric, three-point (PERT), bottom-up'
+     ],
+     keyTerms:['Work Breakdown Structure (WBS)','Scope baseline','Critical path','Float','Earned value (EV)','Planned value (PV)','Actual cost (AC)','CPI','SPI','EAC','ETC','BAC','VAC','Analogous estimating','Parametric estimating','Three-point estimating','PERT','Rolling wave planning','Decomposition','Progressive elaboration'],
+     review:'Do 3 EVM problems without notes. For each formula you needed to look up, write it 10 times and solve another problem. Grade yourself.',
+     resources:[
+       ['PMBOK 7 Guide — Planning Domain (in-game)','#pdf-viewer'],
+       ['David McLachlan — EVM and scheduling walkthrough','https://www.youtube.com/@davidmclachlanproject']
+     ],
+     tests:[
+       ['PMP Exam For Free — cost/schedule questions','https://pmpexamforfree.com/'],
+       ['ExamTopics — EVM questions filter','https://www.examtopics.com/exams/pmi/pmp/view/']
+     ],qset:2},
+    {label:'Day 12-13',name:'Project Work Domain & Procurement',xp:130,
+     tasks:[
+       'Read PMBOK 7 Project Work Performance Domain (pages 69-79) in-game',
+       'Study procurement: FFP (Firm Fixed Price), T&M (Time & Materials), CPFF/CPIF/CPAF (cost-reimbursable)',
+       'Understand buyer vs seller risk in each contract type',
+       'Learn Statement of Work (SOW) types: performance, functional, design',
+       'Change control process: who approves, when, and how',
+       'Master the What should the PM do FIRST? question pattern — usually: gather info > assess > plan > act'
+     ],
+     keyTerms:['Firm Fixed Price (FFP)','Fixed Price Incentive Fee (FPIF)','Cost Plus Fixed Fee (CPFF)','Cost Plus Incentive Fee (CPIF)','Cost Plus Award Fee (CPAF)','Time and Materials (T&M)','Statement of Work (SOW)','Bid documents','RFP/RFI/RFQ','Change Control Board (CCB)','Integrated change control','Configuration management','Project charter'],
+     review:'For each contract type, write who bears the risk and when you would use it. Practice 10 "what should the PM do FIRST?" questions — write the rule behind each correct answer.',
+     resources:[
+       ['PMBOK 7 Guide — Project Work Domain (in-game)','#pdf-viewer'],
+       ['David McLachlan — Integration & procurement','https://www.youtube.com/@davidmclachlanproject']
+     ],
+     tests:[
+       ['Oliver Lehmann — 180-question PDF (offline)','https://oliverlehmann.com/pmp-self-test/100-free-questions/'],
+       ['PMPracticeExam.org — Exam 4','https://www.pmppracticeexam.org/']
+     ],qset:2},
+    {label:'Day 14',name:'Week 2 review & 50-question mock',xp:180,
+     tasks:[
+       'Take 50-question predictive-focused mock — 60-minute timer',
+       'Categorize wrong answers by topic: team, planning, procurement, integration',
+       'Identify your 2 weakest areas for Week 3 targeted review',
+       'Write one sentence per wrong answer explaining why the correct answer is right',
+       'Start your Wrong Answer Log — carry it through Week 4'
+     ],
+     keyTerms:['Baseline','Variance','Forecasting','Risk register','Assumption log','Issue log','Lessons learned register','Stakeholder register'],
+     review:'Target: 70%+. Below 65%? Spend 1 extra day on your weakest topic in the in-game PMBOK 7 before Week 3.',
+     resources:[
+       ['PMBOK 7 Guide — re-read weak sections','#pdf-viewer']
+     ],
+     tests:[
+       ['PrepCast — 120 free timed questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test'],
+       ['PMPracticeExam.org — Exam 5','https://www.pmppracticeexam.org/']
+     ],qset:2}
   ]},
-  {id:3,color:'var(--coral)',bg:'rgba(240,96,96,0.06)',title:'Week 3 — Agile & Hybrid',goal:'~50% of the exam is agile/hybrid. Treat this as seriously as Week 2.',
+  {id:3,color:'var(--coral)',bg:'rgba(240,96,96,0.06)',title:'Week 3 — Delivery, Measurement & Uncertainty',goal:'Master Delivery, Measurement, Uncertainty, and Development Approach — ~50% of the exam.',
    days:[
-    {label:'Day 15-16',name:'Agile foundations & Scrum',xp:120,tasks:['Memorize the 4 Agile Manifesto values — exact wording matters','Understand all 12 Agile Principles','Scrum: 3 roles (PO, SM, Dev Team), 5 ceremonies, 3 artifacts','Know PM role in agile vs Scrum Master role — they are different','Understand the Sprint cycle end-to-end'],
-     review:'Write the 4 Agile values from memory. Then write Scrum roles, ceremonies, and artifacts. Re-read any blanks.',
-     resources:[['Agile Practice Guide (free for PMI members)','https://www.pmi.org/pmbok-guide-standards/practice-guides/agile'],['PMPwithRay — Agile for PMP','https://www.youtube.com/@PMPwithRay']],
-     tests:[['PMLearning — 25 free agile questions','https://www.pmlearning.org/pmp/practice-exam'],['ExamTopics — agile scenarios','https://www.examtopics.com/exams/pmi/pmp/view/']],qset:3},
-    {label:'Day 17-18',name:'Kanban, XP, SAFe & hybrid models',xp:130,tasks:['Kanban: WIP limits, cycle time, throughput, lead time','XP: TDD, pair programming, continuous integration','Hybrid: when to use predictive vs agile','Read Agile Practice Guide section on lifecycle selection','SAFe at a high level: PI Planning, ARTs'],
-     review:'Create a comparison: Scrum vs Kanban vs XP — what problem does each solve? Verify against the Agile Practice Guide.',
-     resources:[['Agile Practice Guide — Lifecycle Selection','https://www.pmi.org/pmbok-guide-standards/practice-guides/agile'],['Simplilearn — Agile YouTube Playlist','https://www.youtube.com/playlist?list=PLEiEAq2VkUULPx4heWRZFC-fxQ9zWDaEf']],
-     tests:[['PMPracticeExam.org — Exam 6','https://www.pmppracticeexam.org/'],['Master of Project — Agile Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/']],qset:3},
-    {label:'Day 19-20',name:'Leadership, conflict & team development',xp:130,tasks:["Tuckman's 5 stages and the PM's role at each",'Leadership styles: servant, situational, transformational, laissez-faire','Conflict modes ranked: Collaborate > Compromise > Smooth > Force > Withdraw','Emotional intelligence: self-awareness, self-regulation, empathy, motivation, social skills','Motivation theories: Maslow, Herzberg, McGregor Theory X/Y, McClelland'],
-     review:"For each conflict mode, write PMI's preferred rank order from memory. For each leadership style, write a scenario where you'd use it.",
-     resources:[['PMBOK 7 — Team Performance Domain','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok'],['David McLachlan — Leadership for PMP','https://www.youtube.com/@davidmclachlanproject']],
-     tests:[['ExamTopics — leadership questions','https://www.examtopics.com/exams/pmi/pmp/view/'],['Oliver Lehmann — 100 hard questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/']],qset:3},
-    {label:'Day 21',name:'Week 3 review & 50-question agile mock',xp:180,tasks:['Take 50-question agile/hybrid mock — 60-minute timer','Categorize wrong answers: Scrum, Kanban, XP, hybrid, leadership, conflict','If below 70%, revisit Agile Practice Guide before Week 4','Update your Wrong Answer Log','Identify your single biggest weakness for final week'],
-     review:'Scattered misses = question strategy issue. Process misses = re-read ceremonies. Leadership misses = practice situational judgment.',
-     resources:[['Agile Practice Guide (re-read weak sections)','https://www.pmi.org/pmbok-guide-standards/practice-guides/agile'],['Pocket Prep — agile drills','https://www.pocketprep.com/exams/pmi-pmp/']],
-     tests:[['PMLearning — 25 agile questions','https://www.pmlearning.org/pmp/practice-exam'],['PMPracticeExam.org — Exam 7','https://www.pmppracticeexam.org/']],qset:3},
+    {label:'Day 15-16',name:'Delivery & Development Approach',xp:130,
+     tasks:[
+       'Read PMBOK 7 Delivery Performance Domain (pages 80-92) in-game',
+       'Read PMBOK 7 Development Approach & Life Cycle Domain (pages 32-50) in-game',
+       'Memorize the 4 Agile Manifesto values — exact wording matters',
+       'Study Scrum: 3 roles (PO, Scrum Master, Dev Team), 5 events, 3 artifacts',
+       'Understand predictive vs adaptive vs hybrid development approaches',
+       'Know when to choose each lifecycle based on requirement stability and delivery cadence'
+     ],
+     keyTerms:['Predictive approach','Adaptive approach','Iterative approach','Incremental approach','Agile','Scrum','Sprint','Product Owner','Scrum Master','Product backlog','Sprint backlog','Increment','Kanban','WIP limit','Cadence','Release','Minimum Viable Product (MVP)','Definition of Done (DoD)','User story','Epic','Deliverable','Value','Quality'],
+     review:'Close PMBOK 7. Write the 4 Agile values and the Scrum 3-5-3 framework (roles/events/artifacts) from memory. For each development approach, write a scenario where you would pick it.',
+     resources:[
+       ['PMBOK 7 Guide — Delivery + Development Approach (in-game)','#pdf-viewer'],
+       ['PMPwithRay — Agile for PMP','https://www.youtube.com/@PMPwithRay'],
+       ['David McLachlan — Scrum walkthrough','https://www.youtube.com/@davidmclachlanproject']
+     ],
+     tests:[
+       ['ExamTopics — agile scenario questions','https://www.examtopics.com/exams/pmi/pmp/view/'],
+       ['Oliver Lehmann — 100 challenging questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/']
+     ],qset:3},
+    {label:'Day 17-18',name:'Measurement Performance Domain',xp:130,
+     tasks:[
+       'Read PMBOK 7 Measurement Performance Domain (pages 93-115) in-game',
+       'Study what to measure: deliverable, performance, business value, stakeholder, baseline',
+       'Learn KPIs vs leading/lagging indicators',
+       'Understand earned value analysis as a measurement tool',
+       'Visualizations: burn charts (burn-up, burn-down), cumulative flow diagrams (CFD), dashboards, task boards',
+       'Avoid measurement pitfalls: Hawthorne effect, vanity metrics, misuse of measures'
+     ],
+     keyTerms:['Key Performance Indicator (KPI)','Leading indicator','Lagging indicator','SMART objectives','Burn-up chart','Burn-down chart','Cumulative Flow Diagram (CFD)','Throughput','Velocity','Cycle time','Lead time','Baseline','Benchmarking','Control chart','Dashboard','Net Promoter Score (NPS)','Hawthorne effect','Vanity metrics'],
+     review:'Create a table: Measure | Why | When to Use. Fill it in for velocity, throughput, CPI, SPI, NPS, burn-down, CFD. Close and recreate from memory.',
+     resources:[
+       ['PMBOK 7 Guide — Measurement Domain (in-game)','#pdf-viewer'],
+       ['Simplilearn — Agile metrics playlist','https://www.youtube.com/playlist?list=PLEiEAq2VkUULPx4heWRZFC-fxQ9zWDaEf']
+     ],
+     tests:[
+       ['PMPracticeExam.org — Exam 6','https://www.pmppracticeexam.org/'],
+       ['Master of Project — measurement Q&A','https://blog.masterofproject.com/pmp-questions-and-answers/']
+     ],qset:3},
+    {label:'Day 19-20',name:'Uncertainty & Risk Management',xp:140,
+     tasks:[
+       'Read PMBOK 7 Uncertainty Performance Domain (pages 116-129) in-game',
+       'Distinguish 4 uncertainty types: general uncertainty, ambiguity, complexity, volatility',
+       'Risk responses for THREATS: avoid, transfer, mitigate, accept, escalate',
+       'Risk responses for OPPORTUNITIES: exploit, share, enhance, accept, escalate',
+       'Qualitative vs quantitative risk analysis — when to use each',
+       'Learn about expected monetary value (EMV), decision tree analysis, Monte Carlo simulation'
+     ],
+     keyTerms:['Risk','Threat','Opportunity','Uncertainty','Ambiguity','Complexity','Volatility','Risk register','Risk breakdown structure (RBS)','Qualitative risk analysis','Quantitative risk analysis','Probability-impact matrix','Expected Monetary Value (EMV)','Decision tree','Monte Carlo simulation','Risk appetite','Risk threshold','Contingency reserve','Management reserve','Fallback plan','Workaround'],
+     review:'Write from memory: 5 threat responses + 5 opportunity responses. Draw a simple probability-impact matrix and place 3 hypothetical risks on it. Verify with PMBOK 7.',
+     resources:[
+       ['PMBOK 7 Guide — Uncertainty Domain (in-game)','#pdf-viewer'],
+       ['PMPwithRay — Risk management','https://www.youtube.com/@PMPwithRay'],
+       ['David McLachlan — Risk deep dive','https://www.youtube.com/@davidmclachlanproject']
+     ],
+     tests:[
+       ['ExamTopics — risk scenario questions','https://www.examtopics.com/exams/pmi/pmp/view/'],
+       ['Oliver Lehmann — 100 hard questions','https://oliverlehmann.com/pmp-self-test/100-free-questions/']
+     ],qset:3},
+    {label:'Day 21',name:'Week 3 review & 50-question agile/risk mock',xp:180,
+     tasks:[
+       'Take 50-question agile + uncertainty mock — 60-minute timer',
+       'Categorize wrong answers: delivery, measurement, uncertainty, agile, hybrid',
+       'If below 70%, revisit in-game PMBOK 7 weak sections before Week 4',
+       'Update your Wrong Answer Log',
+       'Identify your single biggest weakness going into the final week'
+     ],
+     keyTerms:['Hybrid','Iteration','Retrospective','Spike','Timebox','Iteration planning','Review'],
+     review:'Scattered misses = question strategy issue. Process misses = re-read ceremonies and artifacts. Leadership misses = practice more situational judgment questions.',
+     resources:[
+       ['PMBOK 7 Guide — weak section re-read','#pdf-viewer']
+     ],
+     tests:[
+       ['PMPracticeExam.org — Exam 7','https://www.pmppracticeexam.org/'],
+       ['PMP Exam For Free — question sets','https://pmpexamforfree.com/']
+     ],qset:3}
   ]},
-  {id:4,color:'var(--blue)',bg:'rgba(77,166,255,0.06)',title:'Week 4 — Final Boss',goal:'Build exam stamina, close all remaining gaps, and trust your preparation.',
+  {id:4,color:'var(--blue)',bg:'rgba(77,166,255,0.06)',title:'Week 4 — Tailoring, Models & Final Mocks',goal:'Master Tailoring and Models/Methods/Artifacts, then build exam stamina with full mocks.',
    days:[
-    {label:'Day 22-23',name:'Full 180-question timed mock',xp:200,tasks:['Simulate real exam: 230 minutes, no phone, scheduled breaks','Flag uncertain questions — never spend more than 2 minutes on one','After exam: score by domain (People, Process, Business Environment)','Identify lowest-scoring domain and subtopics within it','Spend 90 minutes reviewing every wrong answer with written explanation'],
-     review:'Diagnosis matters more than score. 68% with clear gap analysis beats 75% with no review.',
-     resources:[['PMI Study Hall — full practice exams','https://www.pmi.org/certifications/certification-resources/pmi-study-hall'],['PrepCast — 120 free questions','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']],
-     tests:[['PMPracticeExam.org — Exams 8-10','https://www.pmppracticeexam.org/'],['PMP Exam For Free — 700 questions','https://pmpexamforfree.com/']],qset:4},
-    {label:'Day 24-25',name:'Targeted gap closure',xp:170,tasks:['Pull out your Wrong Answer Log from all 3 weeks','Re-read every concept from your log — skip nothing','If a whole domain is below 65%, re-study it','Practice 20 questions in weakest topic only — target 75%+','Practice reading question stems from the end first'],
-     review:'Reading the last sentence of each question first helps identify what is being asked before the scenario context confuses you.',
-     resources:[['PMI ECO — re-read your weak domain','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation'],['PMBOK 7 — targeted re-read','https://www.pmi.org/pmbok-guide-standards/foundational/pmbok']],
-     tests:[['ExamTopics — filter to weak area','https://www.examtopics.com/exams/pmi/pmp/view/'],['Mometrix — free PMP practice exam','https://www.mometrix.com/academy/pmp-exam/']],qset:4},
-    {label:'Day 26-27',name:'Second full mock & formula drill',xp:200,tasks:['Second full 180-question mock — full 230-minute simulation','EVM formula drill from memory: CPI, SPI, EAC, ETC, VAC','Communications formula n(n-1)/2 — solve 3 channel-count problems','Review remaining flashcard decks','Target: 75%+ — if 70-75% you are ready, trust it'],
-     review:'Compare to Mock 1 score. Improving = good. If not: focus on single weakest subtopic only. Focus beats breadth at this stage.',
-     resources:[['PMP Exam For Free — new question sets','https://pmpexamforfree.com/'],['PrepCast — 2nd round','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']],
-     tests:[['PMPracticeExam.org — final exams','https://www.pmppracticeexam.org/'],['PMLearning — 50 free questions','https://www.pmlearning.org/pmp/practice-exam']],qset:4},
-    {label:'Day 28',name:'Light review & rest',xp:100,tasks:['No new material — brain needs consolidation time','Skim your Wrong Answer Log one final time','Write EVM formulas from memory one last time to confirm','Prepare exam logistics: ID, testing center, snacks, water','Sleep 8+ hours — memory consolidates during sleep'],
+    {label:'Day 22-23',name:'Tailoring + Models, Methods, Artifacts',xp:140,
+     tasks:[
+       'Read PMBOK 7 Tailoring chapter (pages 131-152) in-game',
+       'Read PMBOK 7 Models, Methods & Artifacts chapter (pages 153-196) in-game',
+       'Understand the tailoring process: select initial approach -> tailor for org -> tailor for project',
+       'Study common Models: Situational Leadership, Tuckman, OSCAR, ADKAR, Satir change model',
+       'Study common Methods: data gathering (interview, survey, focus group), estimating, meetings',
+       'Scan key Artifacts: charter, plans, logs (issue, risk, assumption), registers, reports'
+     ],
+     keyTerms:['Tailoring','Development approach selection','Situational Leadership II (SLII)','Thomas-Kilmann conflict model','Negotiation','OSCAR model','ADKAR','Cross-cultural communication','Virtual team considerations','Data gathering','Data analysis','Estimating','Root cause analysis','Strategy artifacts','Logs','Registers','Plans','Baselines','Reports','Agreements'],
+     review:'Write the 5 steps of tailoring from memory. List 8 common artifacts and categorize each as: Strategy / Log or Register / Plan / Baseline / Report / Agreement.',
+     resources:[
+       ['PMBOK 7 Guide — Tailoring + Models/Methods/Artifacts (in-game)','#pdf-viewer'],
+       ['David McLachlan — tailoring & artifacts','https://www.youtube.com/@davidmclachlanproject']
+     ],
+     tests:[
+       ['ExamTopics — tailoring scenarios','https://www.examtopics.com/exams/pmi/pmp/view/'],
+       ['PMPracticeExam.org — Exam 8','https://www.pmppracticeexam.org/']
+     ],qset:4},
+    {label:'Day 24-25',name:'Full 180-question timed mock + review',xp:200,
+     tasks:[
+       'Simulate real exam: 230 minutes, no phone, scheduled breaks',
+       'Flag uncertain questions — never spend more than 2 minutes on one',
+       'After exam: score by domain (People, Process, Business Environment)',
+       'Identify lowest-scoring domain and specific subtopics within it',
+       'Spend 90 minutes reviewing every wrong answer — reference PMBOK 7 for each'
+     ],
+     keyTerms:['Timeboxing','Flagging','Elimination strategy','Question stems','Scenario analysis','PMI-ism'],
+     review:'Diagnosis matters more than score. A 68% with clear gap analysis beats a 75% with no review. What is your single biggest gap? Re-read that PMBOK 7 section in-game.',
+     resources:[
+       ['PMBOK 7 Guide — targeted re-read','#pdf-viewer'],
+       ['PrepCast — 120 free questions for simulation','https://www.project-management-prepcast.com/pmp-practice-exam-questions-sample-test']
+     ],
+     tests:[
+       ['PMP Exam For Free — 700 questions, 7 sets','https://pmpexamforfree.com/'],
+       ['PMPracticeExam.org — Exams 9-10','https://www.pmppracticeexam.org/']
+     ],qset:4},
+    {label:'Day 26-27',name:'Second full mock & formula drill',xp:200,
+     tasks:[
+       'Take second full 180-question mock — full 230-minute simulation',
+       'EVM formula drill from memory: CPI, SPI, EAC, ETC, VAC, BAC',
+       'Communications formula n(n-1)/2 — solve 3 channel-count problems',
+       'Review your Wrong Answer Log one final time',
+       'Target: 75%+ — if 70-75% you are ready, trust the prep'
+     ],
+     keyTerms:['EAC','ETC','BAC','VAC','PV','EV','AC','CPI','SPI','Forecasting','To-Complete Performance Index (TCPI)'],
+     review:'Compare score to Mock 1. Improving? Great. If not: focus the last days on single weakest subtopic only. Focus beats breadth at this stage.',
+     resources:[
+       ['PMBOK 7 Guide — final re-read of weak topics','#pdf-viewer']
+     ],
+     tests:[
+       ['Mometrix — free final practice exam','https://www.mometrix.com/academy/pmp-exam/'],
+       ['PMP Exam For Free — new sets','https://pmpexamforfree.com/']
+     ],qset:4},
+    {label:'Day 28',name:'Light review & rest',xp:100,
+     tasks:[
+       'NO new material — your brain needs consolidation time',
+       'Skim your Wrong Answer Log one final time',
+       'Write EVM formulas from memory one last time to confirm',
+       'Prepare exam logistics: ID, testing center, snacks, water',
+       'Sleep 8+ hours — memory consolidates during sleep'
+     ],
+     keyTerms:['Exam day strategy','Question flagging','Process of elimination','PMI mindset','Confidence calibration'],
      review:'Visualize the exam calmly. You have done the work. Trust it.',
-     resources:[['PMI Certification Handbook — exam day logistics','https://www.pmi.org/certifications/project-management-pmp/pmp-exam-preparation']],
-     tests:[['PearsonVue — official sample exam interface','https://home.pearsonvue.com/pmi']],qset:4},
-  ]},
+     resources:[
+       ['PMBOK 7 Guide — exam day quick reference','#pdf-viewer']
+     ],
+     tests:[
+       ['PearsonVue — official sample exam interface (no signup)','https://home.pearsonvue.com/pmi']
+     ],qset:4}
+  ]}
 ];
 
 const TOTAL_TASKS=WEEKS_DATA.reduce((a,w)=>a+w.days.reduce((b,d)=>b+d.tasks.length,0),0);
@@ -752,6 +1039,7 @@ function updateUI(){
   document.getElementById('hero-pct').textContent=pct+'%';
   document.getElementById('hero-sub').textContent=done+' of '+TOTAL_TASKS+' tasks complete';
   document.getElementById('tasks-done').textContent=done;
+  document.getElementById('tasks-total').textContent=TOTAL_TASKS;
   document.getElementById('total-xp').textContent=state.xp.toLocaleString();
   document.getElementById('streak-val').textContent=state.streak;
   const streakSub=document.getElementById('streak-sub');
@@ -889,8 +1177,18 @@ function renderWeek(wIdx){
       }).join('')}
       <div class="db-section-label" style="color:${w.color};margin-top:16px">Review loop</div>
       <div class="review-box">${d.review}</div>
+      ${(d.keyTerms&&d.keyTerms.length)?`
+      <div class="db-section-label" style="color:var(--amber);margin-top:16px">Key terms in this domain</div>
+      <div class="key-terms-wrap">
+        <div class="key-terms-list">${d.keyTerms.map(t=>`<span class="key-term">${t}</span>`).join('')}</div>
+      </div>`:''}
       <div class="db-section-label" style="color:var(--blue);margin-top:16px">Study materials</div>
-      ${d.resources.map(([l,u])=>`<div class="res-link"><div class="res-dot"></div><a href="${u}" target="_blank" rel="noopener">${l}</a></div>`).join('')}
+      ${d.resources.map(([l,u])=>{
+        if(u==='#pdf-viewer'){
+          return`<div class="res-link"><div class="res-dot" style="background:var(--teal)"></div><a href="#" onclick="event.preventDefault();openPDF()" style="color:var(--teal)">${l}</a></div>`;
+        }
+        return`<div class="res-link"><div class="res-dot"></div><a href="${u}" target="_blank" rel="noopener">${l}</a></div>`;
+      }).join('')}
       <div class="db-section-label" style="color:var(--coral);margin-top:16px">Verify understanding</div>
       ${d.tests.map(([l,u])=>`<div class="test-link"><div class="test-dot"></div><a href="${u}" target="_blank" rel="noopener">${l}</a></div>`).join('')}
       <div class="action-row">
@@ -1054,6 +1352,37 @@ function toast(cls,title,sub){
   el.innerHTML=`<div class="toast-icon">${icons[cls]||'✓'}</div><div class="toast-text"><div class="toast-title">${title}</div><div class="toast-sub">${sub}</div></div>`;
   wrap.appendChild(el);
   setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.remove(),300)},2800);
+}
+
+function openPDF(page){
+  const body=document.getElementById('pdf-body');
+  body.innerHTML='';
+  const pdfPath='PMBOK7.pdf'+(page?'#page='+page:'');
+  const iframe=document.createElement('iframe');
+  iframe.src=pdfPath;
+  iframe.title='PMBOK 7 Guide';
+  iframe.onerror=showPDFFallback;
+  body.appendChild(iframe);
+  setTimeout(()=>{
+    try{
+      if(!iframe.contentDocument&&!iframe.contentWindow){showPDFFallback();}
+    }catch(e){}
+  },1500);
+  document.getElementById('pdf-modal').classList.add('open');
+}
+function showPDFFallback(){
+  const body=document.getElementById('pdf-body');
+  body.innerHTML=`<div class="pdf-fallback">
+    <div class="pdf-fallback-title">PMBOK 7 Guide PDF not found</div>
+    <div>The PMBOK7.pdf file must be in the same folder as this HTML file, or hosted alongside it on GitHub Pages.</div>
+    <div>If you are running from GitHub, you can download the PDF from the repo and place it next to this file.</div>
+    <div><a href="https://github.com/JBarragan-1/PMP-Quest" target="_blank">Download PMBOK7.pdf from GitHub &rarr;</a></div>
+  </div>`;
+}
+function closePDF(){document.getElementById('pdf-modal').classList.remove('open')}
+function openPDFExternal(){
+  const w=window.open('PMBOK7.pdf','_blank');
+  if(!w)alert('Pop-up blocked. Please allow pop-ups for this site.');
 }
 
 function daysBetween(d1,d2){
